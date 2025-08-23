@@ -26,13 +26,16 @@ app.use(cors({
   credentials: true
 }));
 
-// Add security headers to prevent browser warnings
+// Add enhanced security headers to prevent browser warnings and improve trust
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; img-src 'self' data: https:; connect-src 'self' https: wss:;");
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Cache-Control', 'public, max-age=300');
   next();
 });
 
@@ -52,6 +55,11 @@ app.use(express.static(__dirname));
 // Health check endpoint for deployment platforms
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Favicon endpoint to prevent 404 errors that might trigger browser warnings
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
 });
 
 // Root route - serve the login page
