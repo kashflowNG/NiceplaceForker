@@ -2,7 +2,6 @@ modules = ["web", "nodejs-20", "bash"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["nodejs"]
 
 [workflows]
 runButton = "Project"
