@@ -28,7 +28,7 @@ args = "node simple_server.js"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "chmod +x clone_and_run.sh && ./clone_and_run.sh"]
+run = ["sh", "-c", "node simple_server.js"]
 
 [[ports]]
 localPort = 5000

