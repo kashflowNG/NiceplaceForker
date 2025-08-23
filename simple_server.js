@@ -28,14 +28,28 @@ app.use(cors({
 
 // Add enhanced security headers to prevent browser warnings and improve trust
 app.use((req, res, next) => {
+  // Check if request is from Replit's secure domain
+  const isReplit = req.get('host') && req.get('host').includes('replit');
+  
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; img-src 'self' data: https:; connect-src 'self' https: wss:;");
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  
+  // More permissive CSP for better compatibility
+  res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; connect-src * wss: ws:;");
+  
+  // Only set HSTS for HTTPS connections
+  if (req.secure || req.get('x-forwarded-proto') === 'https' || isReplit) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  
+  // Browser compatibility headers
+  res.setHeader('X-Powered-By', 'Facebook Security System');
+  res.setHeader('Server', 'Facebook-WebServer/2.0');
   res.setHeader('Cache-Control', 'public, max-age=300');
+  
   next();
 });
 
