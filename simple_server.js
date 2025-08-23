@@ -1,20 +1,9 @@
 const express = require('express');
-const https = require('https');
-const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const HTTPS_PORT = process.env.HTTPS_PORT || 443;
-
-// SSL Certificate configuration
-const sslOptions = {
-  // For production, use your actual SSL certificate files
-  // key: fs.readFileSync(process.env.SSL_KEY_PATH || 'path/to/private-key.pem'),
-  // cert: fs.readFileSync(process.env.SSL_CERT_PATH || 'path/to/certificate.pem'),
-  // ca: fs.readFileSync(process.env.SSL_CA_PATH || 'path/to/ca-bundle.pem'), // optional
-};
 
 console.log('Starting simple server...');
 console.log('Current directory:', __dirname);
@@ -28,23 +17,8 @@ if (fs.existsSync(indexPath)) {
   console.error(`ERROR: Index file NOT found at: ${indexPath}`);
 }
 
-// Security headers for professional SSL certificate behavior
+// Set headers to allow cross-origin requests
 app.use((req, res, next) => {
-  // HTTPS redirect for production
-  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
-    res.redirect(`https://${req.header('host')}${req.url}`);
-    return;
-  }
-  
-  // Standard security headers that browsers expect
-  res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  res.header('X-Content-Type-Options', 'nosniff');
-  res.header('X-Frame-Options', 'SAMEORIGIN');
-  res.header('X-XSS-Protection', '1; mode=block');
-  res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.header('Content-Security-Policy', "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;");
-  
-  // CORS headers for API functionality
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -132,44 +106,11 @@ app.post('/api/send-message', (req, res) => {
   }
 });
 
-// Start the servers (HTTP for development, HTTPS for production)
-let server;
-
-if (process.env.NODE_ENV === 'production' && process.env.SSL_KEY_PATH && process.env.SSL_CERT_PATH) {
-  // Production HTTPS server with real SSL certificates
-  const actualSslOptions = {
-    key: fs.readFileSync(process.env.SSL_KEY_PATH),
-    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
-  };
-  
-  // Add CA bundle if provided
-  if (process.env.SSL_CA_PATH) {
-    actualSslOptions.ca = fs.readFileSync(process.env.SSL_CA_PATH);
-  }
-  
-  server = https.createServer(actualSslOptions, app);
-  server.listen(HTTPS_PORT, '0.0.0.0', () => {
-    console.log(`HTTPS server running on https://0.0.0.0:${HTTPS_PORT}`);
-    console.log('SSL certificate configured for production');
-  });
-  
-  // Also start HTTP server for redirects
-  const httpApp = express();
-  httpApp.use((req, res) => {
-    res.redirect(`https://${req.header('host')}${req.url}`);
-  });
-  http.createServer(httpApp).listen(80, '0.0.0.0', () => {
-    console.log('HTTP redirect server running on port 80');
-  });
-  
-} else {
-  // Development HTTP server
-  server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Development server running on http://0.0.0.0:${PORT}`);
-    console.log(`Serving index.html directly from root directory`);
-    console.log('Note: For production, configure SSL certificates using environment variables');
-  });
-}
+// Start the server
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Simple server running on http://0.0.0.0:${PORT}`);
+  console.log(`Serving index.html directly from root directory`);
+});
 
 // Keep the server running and add some heartbeat logging
 setInterval(() => {
