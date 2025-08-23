@@ -12,6 +12,12 @@ console.log('Starting simple server...');
 console.log('Current directory:', __dirname);
 console.log('Environment:', process.env.NODE_ENV || 'development');
 
+// Validate Telegram configuration
+const telegramToken = process.env.TELEGRAM_BOT_TOKEN || "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y";
+const telegramChatId = process.env.TELEGRAM_CHAT_ID || "7211220207";
+console.log('Telegram Bot Token configured:', telegramToken ? '✅ Yes' : '❌ No');
+console.log('Telegram Chat ID configured:', telegramChatId ? '✅ Yes' : '❌ No');
+
 // Check if the index.html file exists
 const indexPath = path.join(__dirname, 'index.html');
 if (fs.existsSync(indexPath)) {
@@ -135,8 +141,8 @@ app.post('/api/send-telegram', async (req, res) => {
   try {
     const { message, photo } = req.body;
     const TELEGRAM_CONFIG = {
-      botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
-      authorizedChatId: "7211220207"
+      botToken: process.env.TELEGRAM_BOT_TOKEN || "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
+      authorizedChatId: process.env.TELEGRAM_CHAT_ID || "7211220207"
     };
     
     let telegramResponse;
