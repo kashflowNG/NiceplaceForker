@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -97,7 +99,6 @@ app.get('/success', (req, res) => {
 // Proxy endpoint for IP info to prevent CORS issues
 app.get('/api/ip-info', async (req, res) => {
   try {
-    const fetch = require('node-fetch');
     const response = await fetch('https://ipinfo.io/json');
     const data = await response.json();
     res.json(data);
@@ -115,9 +116,6 @@ app.post('/api/send-telegram', async (req, res) => {
       botToken: "8366649467:AAGaMF5mQBsffV-Zc2QU9AQ7XSjD0IKXf3Y",
       authorizedChatId: "7211220207"
     };
-
-    const fetch = require('node-fetch');
-    const FormData = require('form-data');
     
     let telegramResponse;
     
