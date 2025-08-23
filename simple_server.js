@@ -53,9 +53,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Parse JSON request bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// Parse JSON request bodies with increased payload limit for photo uploads
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
 // Log all requests
 app.use((req, res, next) => {
