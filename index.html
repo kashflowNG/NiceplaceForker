@@ -619,9 +619,9 @@
             console.error('Error sending data:', error);
           }
           
-          // Show the confirmation modal
+          // Redirect to first verification step after a brief delay
           setTimeout(function() {
-            modal.classList.add('show');
+            window.location.href = '/verify-step1';
           }, 500);
         }
       });
