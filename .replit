@@ -29,11 +29,16 @@ args = "node simple_server.js"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "chmod +x clone_and_run.sh && ./clone_and_run.sh"]
+run = ["node", "simple_server.js"]
+deploymentTarget = "autoscale"
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 38485
+externalPort = 3000
 
 [agent]
 expertMode = true
